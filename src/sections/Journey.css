@@ -1,0 +1,144 @@
+.journey__list {
+  display: grid;
+  gap: clamp(3.5rem, 7vw, 6rem);
+  margin-top: clamp(3rem, 6vw, 5rem);
+}
+
+.journey__stop {
+  display: grid;
+  grid-template-columns: minmax(130px, 230px) minmax(0, 1fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+  max-width: 1040px;
+}
+
+.journey__stop:nth-child(even) {
+  margin-left: clamp(0rem, 8vw, 8rem);
+}
+
+.stamp {
+  rotate: var(--tilt);
+  filter: url(#ink);
+  mix-blend-mode: multiply;
+  opacity: 0.88;
+}
+
+[data-theme='uv'] .stamp {
+  mix-blend-mode: screen;
+  filter: url(#ink) drop-shadow(0 0 6px currentColor);
+}
+
+.stamp__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.stamp__svg text {
+  fill: currentColor;
+}
+
+.stamp__arc {
+  font-size: 17px;
+  font-weight: 800;
+  font-stretch: 112%;
+  letter-spacing: 0.12em;
+}
+
+.stamp__date {
+  font-size: 30px;
+  font-weight: 900;
+  font-stretch: 85%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .stamp {
+    opacity: 0;
+  }
+
+  .stamp.is-stamped {
+    animation: stamp-hit 0.4s var(--ease-stamp) forwards;
+  }
+
+  .stamp.is-stamped + .journey__text {
+    animation: jolt 0.25s 0.3s ease-out;
+  }
+}
+
+@keyframes stamp-hit {
+  0% {
+    opacity: 0;
+    scale: 1.9;
+    rotate: calc(var(--tilt) + 9deg);
+  }
+  72% {
+    opacity: 0.95;
+    scale: 0.95;
+  }
+  100% {
+    opacity: 0.88;
+    scale: 1;
+    rotate: var(--tilt);
+  }
+}
+
+@keyframes jolt {
+  40% {
+    translate: 0 3px;
+  }
+}
+
+.journey__period {
+  font-size: var(--fs-0);
+  font-weight: 600;
+  color: var(--bordeaux);
+  margin-bottom: 0.35rem;
+}
+
+.journey__text h3 {
+  font-size: var(--fs-4);
+  font-weight: 750;
+  font-stretch: 112%;
+  line-height: 1.15;
+  margin-bottom: 0.6rem;
+  max-width: 24em;
+}
+
+.journey__summary {
+  color: var(--ink-soft);
+  max-width: 38em;
+}
+
+.journey__points {
+  display: grid;
+  gap: 0.55rem;
+  margin-top: 1rem;
+  max-width: 40em;
+}
+
+.journey__points li {
+  position: relative;
+  padding-left: 1.4rem;
+}
+
+.journey__points li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.7em;
+  width: 0.7rem;
+  border-top: 1.5px solid var(--bordeaux);
+}
+
+@media (max-width: 640px) {
+  .journey__stop,
+  .journey__stop:nth-child(even) {
+    grid-template-columns: minmax(0, 1fr);
+    margin-left: 0;
+  }
+
+  .stamp {
+    width: 150px;
+  }
+}

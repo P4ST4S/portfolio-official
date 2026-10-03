@@ -1,0 +1,559 @@
+.hero {
+  position: relative;
+  padding-top: clamp(6.5rem, 12vh, 9rem);
+  padding-bottom: clamp(4rem, 8vw, 7rem);
+  overflow: clip;
+}
+
+.hero__rosette {
+  position: absolute;
+  width: min(1100px, 120vw);
+  aspect-ratio: 1;
+  top: -18%;
+  right: -28%;
+  opacity: 0.55;
+  pointer-events: none;
+  animation: spin 160s linear infinite;
+}
+
+.hero__rosette path {
+  stroke-dasharray: 1;
+  animation: draw 3.2s var(--ease-out) both;
+}
+
+.hero__rosette g + g path {
+  animation-delay: 0.5s;
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.hero__grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: clamp(1rem, 2.5vw, 2rem);
+  row-gap: 2rem;
+}
+
+/* Name: letters arrive condensed and light, then settle wide and heavy. */
+.hero__name {
+  grid-column: 1 / -1;
+  font-size: min(11.5vw, 10.5rem);
+  font-weight: 800;
+  line-height: 0.84;
+  letter-spacing: -0.035em;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero__word {
+  display: block;
+  white-space: nowrap;
+}
+
+.hero__word + .hero__word {
+  padding-left: 12%;
+}
+
+.hero__letter {
+  display: inline-block;
+  font-stretch: 135%;
+  animation: letter-in 1.2s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 45ms);
+}
+
+@keyframes letter-in {
+  from {
+    font-stretch: 50%;
+    font-weight: 150;
+    opacity: 0;
+    translate: 0 0.25em;
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__name {
+      animation: drift linear both;
+      animation-timeline: scroll(root);
+      animation-range: 0 90vh;
+    }
+  }
+}
+
+@keyframes drift {
+  to {
+    translate: 0 -12vh;
+    opacity: 0.15;
+  }
+}
+
+.hero__copy {
+  grid-column: 1 / span 5;
+  padding-right: 1rem;
+  align-self: start;
+  padding-top: 1rem;
+  animation: rise 1s var(--ease-out) 0.6s both;
+}
+
+.hero__role {
+  font-size: var(--fs-3);
+  font-weight: 600;
+  font-stretch: 115%;
+  margin-bottom: 1rem;
+}
+
+.hero__lead {
+  font-size: var(--fs-2);
+  color: var(--ink-soft);
+  max-width: 32em;
+  margin-bottom: 2rem;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.hero__doc {
+  grid-column: 7 / -1;
+  margin-top: clamp(-4rem, -3vw, -1rem);
+  position: relative;
+  z-index: 1;
+}
+
+/* The data page */
+.idcard-stage {
+  container-type: inline-size;
+  perspective: 1400px;
+  rotate: -2.5deg;
+  animation: card-in 1.1s var(--ease-out) 0.25s both;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    translate: 3rem 3rem;
+    rotate: 6deg;
+  }
+}
+
+.idcard {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 50%;
+  position: relative;
+  margin: 0;
+  aspect-ratio: 125 / 88;
+  border-radius: 14px;
+  overflow: hidden;
+  background: color-mix(in oklab, var(--paper) 55%, white);
+  box-shadow:
+    0 1px 0 color-mix(in oklab, var(--ink) 10%, transparent),
+    0 30px 60px -25px color-mix(in oklab, var(--ink) 45%, transparent),
+    0 12px 24px -12px color-mix(in oklab, var(--ink) 25%, transparent);
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+  transition: transform 0.5s var(--ease-out);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  padding: 4cqi 4.5cqi 3cqi;
+  gap: 2cqi;
+}
+
+[data-theme='uv'] .idcard {
+  background: #120d29;
+  box-shadow:
+    0 0 0 1px #3ff0c433,
+    0 30px 80px -30px #7b4dff88;
+}
+
+.idcard__waves {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.7;
+}
+
+.idcard__holo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    115deg,
+    transparent 25%,
+    #6fe3e0 38%,
+    #b79cff 46%,
+    #f6d98e 54%,
+    #ff9ec7 62%,
+    transparent 75%
+  );
+  background-size: 260% 260%;
+  background-position: var(--mx) var(--my);
+  mix-blend-mode: soft-light;
+  opacity: 0.9;
+  mask-image: radial-gradient(circle at 74% 38%, #000 0 22%, transparent 48%),
+    repeating-radial-gradient(circle at 74% 38%, #000 0 1.5px, transparent 1.5px 4px);
+  mask-composite: add;
+  transition: background-position 0.3s;
+}
+
+.idcard > :not(.idcard__waves, .idcard__holo, .idcard__scan, .stamp-verified, .idcard__uv) {
+  position: relative;
+}
+
+.idcard__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 2.6cqi;
+  font-weight: 700;
+  font-stretch: 125%;
+  color: var(--bordeaux);
+}
+
+.idcard__type {
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.idcard__body {
+  display: grid;
+  grid-template-columns: 26cqi 1fr auto;
+  gap: 4cqi;
+  align-items: start;
+}
+
+.idcard__portrait {
+  position: relative;
+  aspect-ratio: 35 / 45;
+  border-radius: 1.2cqi;
+  overflow: hidden;
+  background: var(--paper-deep);
+  clip-path: inset(0 0 100% 0);
+}
+
+.idcard__portrait.is-revealed {
+  clip-path: inset(0);
+  transition: clip-path 0.9s steps(14, end);
+}
+
+.idcard__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Guilloché printed over the photo, like on a real data page */
+.idcard__portrait-rosette {
+  position: absolute;
+  inset: -20%;
+  opacity: 0.35;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+
+.idcard__fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.2cqi 3cqi;
+}
+
+.idcard__fields dt {
+  font-size: 1.9cqi;
+  color: var(--ink-soft);
+  line-height: 1.2;
+}
+
+.idcard__fields dd {
+  font-size: 2.9cqi;
+  font-weight: 650;
+  font-stretch: 110%;
+  line-height: 1.2;
+}
+
+.idcard__wide {
+  grid-column: 1 / -1;
+}
+
+.idcard__chip {
+  width: 9cqi;
+  color: var(--ink-soft);
+  position: relative;
+}
+
+.idcard.is-reading .idcard__chip {
+  color: var(--bordeaux);
+  filter: drop-shadow(0 0 0.6cqi color-mix(in oklab, var(--bordeaux) 60%, transparent));
+}
+
+.mrz {
+  display: grid;
+  font-size: 3.25cqi;
+  font-stretch: 75%;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  white-space: pre;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.mrz__check {
+  background: none;
+  color: var(--bordeaux);
+  font-weight: 800;
+  display: inline-block;
+  animation: check-pop 0.5s var(--ease-out) both;
+  animation-delay: calc(var(--i) * 8ms);
+}
+
+@keyframes check-pop {
+  from {
+    scale: 1.8;
+    opacity: 0;
+  }
+}
+
+.idcard__scan {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 18%;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    color-mix(in oklab, var(--green) 22%, transparent) 70%,
+    var(--green) 96%,
+    transparent
+  );
+}
+
+.idcard.is-scanning .idcard__scan {
+  animation: scan 1.4s cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+
+@keyframes scan {
+  0% {
+    opacity: 1;
+    translate: 0 -100%;
+  }
+  90% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    translate: 0 560%;
+  }
+}
+
+.idcard__uv {
+  position: absolute;
+  left: 4.5cqi;
+  top: 46cqi;
+  width: 44cqi;
+  rotate: -3deg;
+  font-size: 2.5cqi;
+  font-weight: 700;
+  font-stretch: 115%;
+  line-height: 1.15;
+  pointer-events: none;
+}
+
+.stamp-verified {
+  position: absolute;
+  right: 5cqi;
+  bottom: 20cqi;
+  display: grid;
+  justify-items: center;
+  padding: 1.4cqi 3cqi;
+  border: 0.6cqi double var(--bordeaux);
+  border-radius: 1.5cqi;
+  color: var(--bordeaux);
+  rotate: -14deg;
+  filter: url(#ink);
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+[data-theme='uv'] .stamp-verified {
+  mix-blend-mode: screen;
+}
+
+.stamp-verified span {
+  font-size: 6.5cqi;
+  font-weight: 900;
+  font-stretch: 130%;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+.stamp-verified small {
+  font-size: 1.8cqi;
+  letter-spacing: 0.2em;
+}
+
+.stamp-verified.is-down {
+  animation: stamp-down 0.42s var(--ease-stamp) both;
+}
+
+@keyframes stamp-down {
+  0% {
+    opacity: 0;
+    scale: 2.6;
+  }
+  75% {
+    opacity: 0.92;
+    scale: 0.94;
+  }
+  100% {
+    opacity: 0.88;
+    scale: 1;
+  }
+}
+
+/* Verification log */
+.checks {
+  margin-top: 2rem;
+  padding-left: clamp(0rem, 3vw, 2.5rem);
+  animation: rise 1s var(--ease-out) 0.9s both;
+}
+
+.checks__list {
+  display: grid;
+  gap: 0.15rem;
+  font-size: var(--fs-1);
+}
+
+.checks__list li {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr 1.25rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.35rem 0;
+  color: var(--ink-soft);
+  opacity: 0.45;
+  transition:
+    opacity 0.3s,
+    color 0.3s;
+}
+
+.checks__list li.is-active,
+.checks__list li.is-ok {
+  opacity: 1;
+}
+
+.checks__list li.is-ok {
+  color: var(--ink);
+}
+
+.checks__code {
+  font-size: var(--fs-0);
+  color: var(--ink-soft);
+}
+
+.checks__state {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 1.5px solid var(--rule);
+  position: relative;
+  justify-self: end;
+}
+
+.is-active .checks__state {
+  border-color: var(--ink-soft);
+  border-top-color: transparent;
+  animation: spin 0.6s linear infinite;
+}
+
+.is-ok .checks__state {
+  border-color: var(--ok);
+  background: var(--ok);
+}
+
+.is-ok .checks__state::after {
+  content: '';
+  position: absolute;
+  left: 34%;
+  top: 18%;
+  width: 26%;
+  height: 48%;
+  border: solid var(--paper);
+  border-width: 0 2px 2px 0;
+  rotate: 45deg;
+  animation: check-pop 0.35s var(--ease-out) both;
+}
+
+.checks__foot {
+  margin-top: 1rem;
+  font-size: var(--fs-0);
+  color: var(--ink-soft);
+  max-width: 40em;
+}
+
+.checks__foot [role='status'] {
+  color: var(--ink);
+  font-weight: 650;
+}
+
+.checks__replay {
+  display: inline;
+  margin-left: 0.5em;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--bordeaux);
+}
+
+@media (max-width: 1023px) {
+  .hero__copy {
+    grid-column: 1 / -1;
+  }
+
+  .hero__doc {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+    max-width: 640px;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero__name {
+    font-size: 14vw;
+  }
+
+  .hero__word + .hero__word {
+    padding-left: 0;
+  }
+
+  .idcard-stage {
+    rotate: -1deg;
+  }
+
+  .checks {
+    padding-left: 0;
+  }
+}

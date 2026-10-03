@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Antoine Rospars, Software Engineer</title>
+    <meta
+      name="description"
+      content="Software engineer chez Datakeen. SDK NFC pour pièces d'identité, plateforme KYC en production, et mcp-audit, proxy d'audit open source pour le Model Context Protocol."
+    />
+    <meta name="theme-color" content="#e9ece8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0e0b1f" media="(prefers-color-scheme: dark)" />
+    <meta property="og:type" content="profile" />
+    <meta property="og:title" content="Antoine Rospars, Software Engineer" />
+    <meta
+      property="og:description"
+      content="SDK NFC pour pièces d'identité, plateforme KYC, mcp-audit. Go et TypeScript."
+    />
+    <script>
+      // Set the theme before first paint so the page never flashes the wrong paper.
+      ;(() => {
+        let saved
+        try {
+          saved = localStorage.getItem('theme')
+        } catch {}
+        const uv = saved ? saved === 'uv' : matchMedia('(prefers-color-scheme: dark)').matches
+        document.documentElement.dataset.theme = uv ? 'uv' : 'paper'
+      })()
+    </script>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Anybody:ital,wdth,wght@0,50..150,100..900;1,50..150,100..900&family=Martian+Mono:wdth,wght@75..112.5,300..700&display=swap"
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Antoine Rospars",
+        "alternateName": "P4ST4S",
+        "jobTitle": "Software Engineer",
+        "worksFor": { "@type": "Organization", "name": "Datakeen" },
+        "alumniOf": { "@type": "CollegeOrUniversity", "name": "EPITECH Paris" },
+        "sameAs": ["https://github.com/P4ST4S", "https://www.linkedin.com/in/antoinerospars/"]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
