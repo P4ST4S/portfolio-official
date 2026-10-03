@@ -228,16 +228,16 @@
   outline-color: var(--green);
 }
 
-.nfc__stage:not([data-step='0'], [data-step='5']) .nfc__phone {
+.nfc__stage:not([data-step='0'], [data-step='4']) .nfc__phone {
   translate: -39% 26%;
   rotate: -6deg;
 }
 
-.nfc__stage:not([data-step='0'], [data-step='5']) .nfc__doc-chip {
+.nfc__stage:not([data-step='0'], [data-step='4']) .nfc__doc-chip {
   color: var(--bordeaux);
 }
 
-.nfc__stage:not([data-step='0'], [data-step='5']) .nfc__rings span {
+.nfc__stage:not([data-step='0'], [data-step='4']) .nfc__rings span {
   animation: ring 1.8s var(--ease-out) infinite;
   animation-delay: calc(var(--k, 0) * 0.6s);
 }
@@ -261,21 +261,21 @@
   }
 }
 
-.nfc__stage[data-step='5'] .nfc__phone {
+.nfc__stage[data-step='4'] .nfc__phone {
   translate: 0 4%;
   rotate: 0deg;
 }
 
-.nfc__stage[data-step='5'] .nfc__doc {
+.nfc__stage[data-step='4'] .nfc__doc {
   rotate: -3deg;
 }
 
-.nfc__stage[data-step='5'] .nfc__doc-seal {
+.nfc__stage[data-step='4'] .nfc__doc-seal {
   opacity: 0.9;
   scale: 1;
 }
 
-.nfc__stage[data-step='5'] .nfc__sdks li {
+.nfc__stage[data-step='4'] .nfc__sdks li {
   opacity: 1;
   translate: 0 0;
 }
@@ -287,7 +287,7 @@
 }
 
 .nfc__steps > li {
-  min-height: 72vh;
+  min-height: 55vh;
   display: grid;
   align-content: center;
   grid-template-columns: 3rem 1fr;
@@ -328,61 +328,6 @@
   max-width: 34em;
 }
 
-.apdu {
-  margin-top: 1.5rem;
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
-  background: var(--console-bg);
-  color: var(--console-ink);
-  font-size: 0.75rem;
-  line-height: 1.8;
-}
-
-[data-theme='uv'] .apdu {
-  box-shadow: 0 0 0 1px #3ff0c422;
-}
-
-.apdu li {
-  display: grid;
-  grid-template-columns: 1.25rem minmax(0, 1fr) auto auto;
-  column-gap: 0.75rem;
-  align-items: baseline;
-}
-
-.apdu__dir {
-  color: var(--console-dim);
-}
-
-.apdu__cmd .apdu__dir {
-  color: #ffb4c8;
-}
-
-.apdu__text {
-  overflow-wrap: anywhere;
-}
-
-.apdu__note {
-  color: var(--console-dim);
-  font-size: 0.68rem;
-}
-
-.apdu__ok {
-  grid-column: 4;
-  color: #3ff0c4;
-}
-
-.is-active .apdu li {
-  animation: line-in 0.35s var(--ease-out) both;
-  animation-delay: calc(var(--j) * 110ms + 150ms);
-}
-
-@keyframes line-in {
-  from {
-    opacity: 0;
-    translate: -0.5rem 0;
-  }
-}
-
 @property --p {
   syntax: '<number>';
   inherits: true;
@@ -413,24 +358,5 @@
   .nfc__steps > li {
     min-height: 58svh;
     grid-template-columns: 2.25rem 1fr;
-  }
-
-  .apdu {
-    grid-column: 1 / -1;
-    font-size: 0.68rem;
-    padding: 0.85rem 1rem;
-  }
-
-  .apdu li {
-    grid-template-columns: 1rem minmax(0, 1fr) auto;
-  }
-
-  .apdu__note {
-    grid-column: 2;
-    grid-row: 2;
-  }
-
-  .apdu__ok {
-    grid-column: 3;
   }
 }

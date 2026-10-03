@@ -445,7 +445,7 @@
 
 .checks__list li {
   display: grid;
-  grid-template-columns: 3.5rem 1fr 1.25rem;
+  grid-template-columns: 1fr 1.25rem;
   align-items: center;
   gap: 0.75rem;
   padding: 0.35rem 0;
@@ -463,11 +463,6 @@
 
 .checks__list li.is-ok {
   color: var(--ink);
-}
-
-.checks__code {
-  font-size: var(--fs-0);
-  color: var(--ink-soft);
 }
 
 .checks__state {

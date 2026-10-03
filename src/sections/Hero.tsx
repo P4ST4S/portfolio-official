@@ -9,12 +9,12 @@ const [MRZ_1, MRZ_2] = mrz
 const CHECK_DIGITS = new Set([9, 19, 27, 42, 43])
 
 const CHECKS = [
-  { label: 'MRZ lue, 5 chiffres de contrôle valides', code: 'OCR' },
-  { label: 'Canal chiffré ouvert avec la puce', code: 'BAC' },
-  { label: 'Données d’identité lues', code: 'DG1' },
-  { label: 'Portrait lu', code: 'DG2' },
-  { label: 'Signature de l’émetteur valide', code: 'SOD' },
-  { label: 'Puce authentique, pas un clone', code: 'AA' },
+  'MRZ lue, 5 chiffres de contrôle valides',
+  'Connexion sécurisée à la puce',
+  'Données d’identité lues',
+  'Portrait lu',
+  'Document émis par un État',
+  'Puce authentique, pas un clone',
 ]
 
 // Time spent on each step before moving to the next one (ms).
@@ -213,9 +213,8 @@ export function Hero() {
           <div className="checks">
             <ol className="checks__list">
               {CHECKS.map((check, i) => (
-                <li key={check.code} className={i < checksDone ? 'is-ok' : i === checksDone && step > 0 ? 'is-active' : ''}>
-                  <span className="checks__code mono">{check.code}</span>
-                  {check.label}
+                <li key={check} className={i < checksDone ? 'is-ok' : i === checksDone && step > 0 ? 'is-active' : ''}>
+                  {check}
                   <span className="checks__state" aria-hidden="true" />
                 </li>
               ))}

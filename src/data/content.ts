@@ -161,9 +161,9 @@ export const projects: Project[] = [
     name: 'ID Scan',
     pitch: 'Lit la puce des passeports et des cartes d’identité françaises.',
     proof: 'Publiée sur l’App Store',
-    stack: ['React Native', 'Swift', 'Kotlin', 'C', 'ICAO 9303'],
+    stack: ['React Native', 'Swift', 'Kotlin', 'NFC'],
     detail:
-      'PACE pour la carte d’identité, BAC pour le passeport. Bridges natifs Swift et Kotlin vers du C pour la cryptographie, authentification passive et active, extraction de la photo et de la signature stockées dans la puce.',
+      'Lit la puce de la carte d’identité française et des passeports, vérifie que le document est authentique et en extrait la photo du titulaire.',
     links: [{ label: 'App Store', href: 'https://apps.apple.com/fr/app/id-scan/id6762505375' }],
   },
   {

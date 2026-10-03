@@ -4,112 +4,39 @@ import { mrz } from '../data/content'
 import './Chip.css'
 
 const [MRZ_1, MRZ_2] = mrz
-// BAC key material: document number, birth date and expiry, each with its check digit.
-const MRZ_INFO = MRZ_2.slice(0, 10) + MRZ_2.slice(13, 20) + MRZ_2.slice(21, 28)
 
-const hex = (bytes: Uint8Array) => Array.from(bytes, (b) => b.toString(16).padStart(2, '0').toUpperCase()).join(' ')
-const randomHex = (length: number) => hex(crypto.getRandomValues(new Uint8Array(length)))
-
-interface LogLine {
-  dir?: '→' | '←'
-  text: string
-  note?: string
-  ok?: boolean
-}
-
-interface Step {
-  title: string
-  body: string
-  screen: string
-  log: LogLine[]
-}
-
-const buildSteps = (seed: string, challenge: string, nonce: string): Step[] => [
+// Told from the user's side on purpose: how the SDK works internally is Datakeen's know-how.
+const STEPS = [
   {
-    title: 'La caméra lit la MRZ',
-    body: 'Apple Vision sur iOS, Google ML Kit sur Android. Le numéro du document, la date de naissance et la date d’expiration, vérifiés par leurs chiffres de contrôle, deviennent la clé d’accès à la puce. Sur la carte d’identité française, c’est le CAN à six chiffres qui joue ce rôle.',
+    title: 'Scanner le document',
+    body: 'L’utilisateur cadre son passeport ou sa carte d’identité. Le SDK le guide jusqu’à une capture exploitable, sans saisie manuelle.',
     screen: 'Cadrez la bande en bas du document',
-    log: [
-      { text: '2 lignes OCR-B détectées' },
-      { text: `document   ${MRZ_2.slice(0, 9)}`, note: `contrôle ${MRZ_2[9]}`, ok: true },
-      { text: `naissance  ${MRZ_2.slice(13, 19)}`, note: `contrôle ${MRZ_2[19]}`, ok: true },
-      { text: `expiration ${MRZ_2.slice(21, 27)}`, note: `contrôle ${MRZ_2[27]}`, ok: true },
-    ],
   },
   {
-    title: 'Un canal chiffré s’ouvre',
-    body: 'BAC pour le passeport, PACE pour la carte d’identité. Les clés de session sont dérivées de la MRZ : sans le document physique sous les yeux, la puce refuse de répondre.',
+    title: 'Poser le téléphone sur la puce',
+    body: 'La lecture NFC démarre dès que le téléphone touche le document. L’échange avec la puce est chiffré : sans le document physique, rien ne se passe.',
     screen: 'Gardez le téléphone sur la puce',
-    log: [
-      { text: 'K_seed = SHA-1(MRZ)[0..16]', note: 'calculé ici' },
-      { text: seed || '…' },
-      { dir: '→', text: '00 A4 04 0C 07 A0 00 00 02 47 10 01', note: 'SELECT eMRTD' },
-      { dir: '←', text: '90 00', ok: true },
-      { dir: '→', text: '00 84 00 00 08', note: 'GET CHALLENGE' },
-      { dir: '←', text: `${challenge} 90 00`, ok: true },
-      { dir: '→', text: '00 82 00 00 28 …', note: 'MUTUAL AUTH' },
-      { dir: '←', text: '… 90 00', ok: true },
-    ],
   },
   {
-    title: 'Les données sont lues',
-    body: 'DG1 contient l’identité, DG2 la photo du titulaire. Chaque commande APDU est chiffrée et signée, et passe par des bridges Kotlin et Swift vers un cœur en C.',
+    title: 'Lire les données de l’État',
+    body: 'Identité et photo sont lues directement dans la puce, telles que l’autorité émettrice les a écrites. Pas d’OCR approximatif sur ces données-là.',
     screen: 'Lecture des données',
-    log: [
-      { dir: '→', text: '0C A4 02 0C 15 87 09 01 … 8E 08 … 00', note: 'SELECT DG1' },
-      { dir: '←', text: '99 02 90 00 8E 08 … 90 00', ok: true },
-      { dir: '→', text: '0C B0 00 00 0D 97 01 DF 8E 08 … 00', note: 'READ BINARY' },
-      { dir: '←', text: '87 … 99 02 90 00 8E 08 … 90 00', ok: true },
-      { text: 'DG1  identité', ok: true },
-      { text: 'DG2  portrait JPEG 2000', ok: true },
-    ],
   },
   {
-    title: 'La signature de l’État est vérifiée',
-    body: 'Authentification passive : le fichier SOD contient l’empreinte de chaque groupe de données, signée par l’autorité émettrice. Un seul octet modifié et la vérification échoue.',
-    screen: 'Vérification de la signature',
-    log: [
-      { dir: '→', text: '0C A4 02 0C 15 87 09 01 … 00', note: 'SELECT SOD' },
-      { text: 'SHA-256(DG1) = SOD.hash[1]', ok: true },
-      { text: 'SHA-256(DG2) = SOD.hash[2]', ok: true },
-      { text: 'signature SOD ← certificat DS ← CSCA', ok: true },
-    ],
-  },
-  {
-    title: 'La puce prouve qu’elle n’est pas un clone',
-    body: 'Authentification active : la puce signe un défi aléatoire avec une clé privée qu’elle ne révèle jamais. La clé publique correspondante est stockée dans DG15.',
-    screen: 'Vérification de la puce',
-    log: [
-      { dir: '→', text: `0C 88 00 00 … ${nonce} …`, note: 'INTERNAL AUTH' },
-      { dir: '←', text: '… signature … 90 00', ok: true },
-      { text: 'signature vérifiée avec DG15', ok: true },
-    ],
+    title: 'Prouver l’authenticité',
+    body: 'Le SDK vérifie que la puce a bien été émise par un État, qu’elle n’a pas été modifiée et qu’il ne s’agit pas d’un clone.',
+    screen: 'Vérification du document',
   },
   {
     title: 'Livré en quatre SDK',
     body: 'Flutter, Kotlin, Swift et React Native, pour s’intégrer dans les parcours KYC des clients. En production chez un client majeur, pour plusieurs centaines d’utilisateurs.',
     screen: 'Document vérifié',
-    log: [
-      { text: 'Android        Kotlin', ok: true },
-      { text: 'iOS            Swift', ok: true },
-      { text: 'Flutter        plugin', ok: true },
-      { text: 'React Native   module', ok: true },
-    ],
   },
 ]
 
 export function Chip() {
   const [active, setActive] = useState(0)
-  const [seed, setSeed] = useState('')
-  const [challenge] = useState(() => randomHex(8))
-  const [nonce] = useState(() => randomHex(8))
   const listRef = useRef<HTMLOListElement>(null)
-
-  useEffect(() => {
-    crypto.subtle
-      .digest('SHA-1', new TextEncoder().encode(MRZ_INFO))
-      .then((digest) => setSeed(hex(new Uint8Array(digest).slice(0, 16))))
-  }, [])
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -124,8 +51,6 @@ export function Chip() {
     return () => observer.disconnect()
   }, [])
 
-  const steps = buildSteps(seed, challenge, nonce)
-
   return (
     <section className="section nfc" id="nfc" aria-labelledby="nfc-title">
       <div className="wrap">
@@ -134,7 +59,7 @@ export function Chip() {
         </h2>
         <p className="section-lead">
           Chez Datakeen, j’ai conçu de zéro le SDK mobile qui lit la puce des passeports et des cartes
-          d’identité pendant un parcours KYC. Voici ce qui se passe quand on pose le téléphone sur le document.
+          d’identité pendant un parcours KYC. Voici ce que vit l’utilisateur, du scan à la vérification.
         </p>
 
         <div className="nfc__layout">
@@ -161,12 +86,12 @@ export function Chip() {
                 <div className="nfc__screen">
                   <span
                     className="nfc__ring-progress"
-                    style={{ '--p': (active + 1) / steps.length } as CSSProperties}
+                    style={{ '--p': (active + 1) / STEPS.length } as CSSProperties}
                   >
-                    {active + 1}/{steps.length}
+                    {active + 1}/{STEPS.length}
                   </span>
                   <span key={active} className="nfc__screen-text">
-                    {steps[active].screen}
+                    {STEPS[active].screen}
                   </span>
                 </div>
               </div>
@@ -188,23 +113,11 @@ export function Chip() {
           </div>
 
           <ol className="nfc__steps" ref={listRef}>
-            {steps.map((step, i) => (
+            {STEPS.map((step, i) => (
               <li key={step.title} data-step={i} className={i === active ? 'is-active' : undefined}>
                 <span className="nfc__num">{i + 1}</span>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
-                <ol className="apdu mono" aria-label="Échanges avec la puce">
-                  {step.log.map((line, j) => (
-                    <li key={j} style={{ '--j': j } as CSSProperties} className={line.dir ? 'apdu__cmd' : undefined}>
-                      <span className="apdu__dir" aria-hidden="true">
-                        {line.dir}
-                      </span>
-                      <span className="apdu__text">{line.text}</span>
-                      {line.note && <span className="apdu__note">{line.note}</span>}
-                      {line.ok && <span className="apdu__ok">ok</span>}
-                    </li>
-                  ))}
-                </ol>
               </li>
             ))}
           </ol>

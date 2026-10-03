@@ -44,8 +44,8 @@ export function Footer() {
       <div className="wrap footer__row">
         <p className="footer__colophon">
           Construit avec React 19, React Compiler et Vite. Aucune bibliothèque d’animation : CSS scroll-driven
-          animations, View Transitions et Web Crypto. Les chiffres de contrôle de la MRZ et la clé BAC sont
-          calculés à l’affichage.
+          animations, View Transitions et Web Crypto. Les chiffres de contrôle de la MRZ et les signatures de la
+          démo mcp-audit sont calculés dans votre navigateur.
         </p>
         <p>© {YEAR} Antoine Rospars</p>
       </div>
