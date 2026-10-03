@@ -1,0 +1,218 @@
+<!doctype html>
+<!--
+  Source of public/og.jpg: the 1200×630 preview Discord (and others) show when the site is shared.
+  A still from the title screen: letterbox bars, the road in the mist, the name.
+  Regenerate after editing:
+    chrome --headless=new --hide-scrollbars --window-size=1200,630 --virtual-time-budget=4000 --screenshot=og.png scripts/og.html
+  then save it as public/og.jpg (JPEG keeps the mist light: ~100 KB instead of ~450 KB)
+  Add ?world=other to the file URL for the red version.
+-->
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>og</title>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&family=IM+Fell+English:ital@0;1&family=Jost:wght@400;500&display=block"
+    />
+    <style>
+      :root {
+        --bg: #bfc4c8;
+        --ink: #17191b;
+        --ink-2: #393d41;
+        --red: #8f1d14;
+        --scene: url('../public/scenes/road-fog.svg');
+        --fog: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='560' preserveAspectRatio='none'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0032 .011' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .9 0 0 0 0 .93 0 0 0 0 .95 0 0 0 1.7 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+      }
+
+      .other {
+        --bg: #0b0606;
+        --ink: #ecdcd6;
+        --ink-2: #c0a7a0;
+        --red: #e0402c;
+        --scene: url('../public/scenes/road-other.svg');
+        --fog: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='560' preserveAspectRatio='none'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0032 .011' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .03 0 0 0 0 .02 0 0 0 1.5 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+      }
+
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+        background: #050505;
+      }
+
+      .frame {
+        position: absolute;
+        inset: 58px 0;
+        overflow: hidden;
+        background: var(--bg) var(--scene) right bottom / cover no-repeat;
+      }
+
+      .mist {
+        position: absolute;
+        inset: 18% 0 auto;
+        height: 62%;
+        background: var(--fog) 0 0 / 1400px 100% repeat-x;
+        opacity: 0.7;
+        mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent);
+      }
+
+      .veil {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          100deg,
+          color-mix(in oklab, var(--bg) 92%, transparent) 0%,
+          color-mix(in oklab, var(--bg) 74%, transparent) 42%,
+          transparent 66%
+        );
+      }
+
+      .ash {
+        position: absolute;
+        inset: 0;
+      }
+
+      .copy {
+        position: absolute;
+        left: 64px;
+        top: 50%;
+        translate: 0 -50%;
+        color: var(--ink);
+      }
+
+      .over {
+        margin: 0 0 14px;
+        font: 500 20px/1 'Jost', sans-serif;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--ink-2);
+      }
+
+      h1 {
+        margin: 0;
+        font: 400 92px/0.95 'IM Fell English', Georgia, serif;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      h1 span {
+        position: relative;
+        display: block;
+        isolation: isolate;
+        filter: url(#worn);
+      }
+
+      h1 span + span {
+        padding-left: 0.45em;
+      }
+
+      h1 span::after {
+        content: attr(data-ghost);
+        position: absolute;
+        left: 0.07em;
+        top: 0.04em;
+        z-index: -1;
+        color: var(--red);
+        opacity: 0.25;
+      }
+
+      h1 span + span::after {
+        left: calc(0.45em + 0.07em);
+      }
+
+      .handle {
+        margin: 16px 0 0 4px;
+        font: italic 400 34px/1 'IM Fell English', Georgia, serif;
+        letter-spacing: 0.55em;
+        color: var(--red);
+      }
+
+      .lead {
+        margin: 22px 0 0;
+        font: italic 400 28px/1.3 'EB Garamond', Georgia, serif;
+        color: var(--ink-2);
+      }
+
+      .bar {
+        position: absolute;
+        inset: auto 0 0;
+        height: 58px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 40px;
+        font: 400 21px/1 'EB Garamond', Georgia, serif;
+        color: #9a968f;
+      }
+
+      .bar b {
+        font: 500 15px/1 'Jost', sans-serif;
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: #c9c5be;
+      }
+
+      .square {
+        display: inline-block;
+        width: 14px;
+        height: 14px;
+        margin-right: 12px;
+        vertical-align: -1px;
+        background: #8f1d14;
+        rotate: 3deg;
+      }
+    </style>
+  </head>
+  <body>
+    <svg width="0" height="0" style="position: absolute">
+      <filter id="worn" x="-5%" y="-20%" width="110%" height="140%">
+        <feTurbulence type="fractalNoise" baseFrequency="0.6" numOctaves="2" seed="8" result="grit" />
+        <feColorMatrix in="grit" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -9 6.9" result="holes" />
+        <feComposite in="SourceGraphic" in2="holes" operator="in" result="eroded" />
+        <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="2" result="warp" />
+        <feDisplacementMap in="eroded" in2="warp" scale="2" xChannelSelector="R" yChannelSelector="G" />
+      </filter>
+    </svg>
+
+    <div class="frame">
+      <div class="mist"></div>
+      <div class="veil"></div>
+      <svg class="ash" viewBox="0 0 1200 514"></svg>
+      <div class="copy">
+        <p class="over">Software Engineer · Datakeen</p>
+        <h1>
+          <span data-ghost="antoine">Antoine</span>
+          <span data-ghost="rospars">Rospars</span>
+        </h1>
+        <p class="handle">p4st4s</p>
+        <p class="lead">SDK NFC, plateforme KYC, mcp-audit.</p>
+      </div>
+    </div>
+
+    <div class="bar">
+      <span><span class="square"></span>antoinerospars.dev</span>
+      <b>Go · TypeScript · Paris</b>
+    </div>
+
+    <script>
+      if (new URLSearchParams(location.search).get('world') === 'other') document.documentElement.classList.add('other')
+      // Falling ash, from a fixed seed so every render is the same.
+      let seed = 11
+      const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646
+      const other = document.documentElement.classList.contains('other')
+      const ash = document.querySelector('.ash')
+      for (let i = 0; i < 70; i++) {
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle')
+        c.setAttribute('cx', (rand() * 1200).toFixed(1))
+        c.setAttribute('cy', (rand() * 514).toFixed(1))
+        c.setAttribute('r', (0.6 + rand() * 1.6).toFixed(2))
+        c.setAttribute('fill', other ? '#e0602e' : '#f4f2ee')
+        c.setAttribute('opacity', (0.3 + rand() * 0.5).toFixed(2))
+        ash.append(c)
+      }
+    </script>
+  </body>
+</html>

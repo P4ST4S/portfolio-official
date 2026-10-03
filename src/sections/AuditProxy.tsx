@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
+import { MarkerStrike } from '../components/Marker'
+import { SectionHead } from '../components/SectionHead'
 import { mcpAudit } from '../data/content'
 import { createRateLimiter, createSigningKey, inspect, sign, verify, type AuditLine, type Decision } from '../lib/audit'
 import './AuditProxy.css'
@@ -20,6 +22,13 @@ const DECISION_LABEL: Record<Decision, string> = {
   rate_limited: 'rate limit atteint',
 }
 
+// What the game would print in its text box when you try the door.
+const DOOR: Record<Decision, string> = {
+  allow: 'La porte s’ouvre.',
+  deny: 'La porte est verrouillée.',
+  rate_limited: 'La porte est coincée. Il faut attendre.',
+}
+
 interface Entry {
   line: AuditLine
   sig: string
@@ -38,6 +47,7 @@ export function AuditProxy() {
   const [entries, setEntries] = useState<Entry[]>([])
   const [packets, setPackets] = useState<Packet[]>([])
   const [request, setRequest] = useState<string | null>(null)
+  const [message, setMessage] = useState('Une porte. Derrière, vos outils.')
   const seqRef = useRef(0)
 
   useEffect(() => {
@@ -59,6 +69,8 @@ export function AuditProxy() {
     const sig = await sign(key, line)
     const valid = await verify(key, line, sig)
 
+    const masked = line.redacted.length ? ` Masqué avant d’entrer : ${[...new Set(line.redacted)].join(', ')}.` : ''
+    setMessage(`${preset.tool} · ${DOOR[line.decision]}${line.decision === 'allow' ? masked : ''}`)
     setPackets((current) => [...current, { seq, tool: preset.tool, decision: line.decision }])
     setEntries((current) => [...current, { line, sig, valid }].slice(-6))
   }
@@ -69,16 +81,24 @@ export function AuditProxy() {
     if (!key || !last) return
     const forged: AuditLine = { ...last.line, decision: last.line.decision === 'allow' ? 'deny' : 'allow' }
     const valid = await verify(key, forged, last.sig)
+    setMessage(
+      valid
+        ? 'La ligne a été réécrite. Personne ne s’en rendra compte.'
+        : 'Quelqu’un a réécrit la dernière ligne. La signature ne correspond plus.',
+    )
     setEntries((current) => current.map((e) => (e === last ? { ...e, line: forged, valid } : e)))
   }
 
   return (
-    <section className="section audit" id="mcp-audit" aria-labelledby="audit-title">
+    <section
+      className="section audit"
+      id="mcp-audit"
+      aria-labelledby="audit-title"
+      data-monologue="Quelqu’un tient un registre de tout ce qui passe ici."
+    >
       <div className="wrap">
-        <h2 className="section-title" id="audit-title">
-          mcp-audit
-        </h2>
-        <p className="section-lead">
+        <SectionHead id="audit-title" kicker="le registre de l’hôtel" title="mcp-audit" />
+        <p className="sh-lead">
           Mon projet open source. Un proxy Go qui se place entre un agent IA et ses outils MCP, sans modifier
           ni l’un ni l’autre, et garde une trace signée de chaque appel. Essayez-le : la démo ci-dessous
           rejoue sa logique dans votre navigateur.
@@ -94,7 +114,7 @@ export function AuditProxy() {
               {packets.map((p) => (
                 <span
                   key={p.seq}
-                  className={`audit__packet audit__packet--${p.decision === 'allow' ? 'pass' : 'block'}`}
+                  className={`audit__packet audit__packet--${p.decision}`}
                   onAnimationEnd={() => setPackets((current) => current.filter((x) => x.seq !== p.seq))}
                 >
                   {p.tool}
@@ -115,7 +135,13 @@ export function AuditProxy() {
             <p className="audit__hint">Envoyer un appel d’outil :</p>
             <div className="audit__buttons">
               {PRESETS.map((preset) => (
-                <button key={preset.tool} type="button" disabled={!key} onClick={() => call(preset)}>
+                <button
+                  key={preset.tool}
+                  type="button"
+                  disabled={!key}
+                  onClick={() => call(preset)}
+                  data-danger={preset.tool.startsWith('delete_') ? '' : undefined}
+                >
                   <span className="mono">{preset.tool}</span>
                   {preset.label}
                 </button>
@@ -127,21 +153,27 @@ export function AuditProxy() {
             </p>
           </div>
 
+          <p className="audit__message mono" role="status">
+            {message}
+          </p>
+
           <div className="audit__panels">
-            <figure className="audit__panel">
+            <figure className="audit__panel audit__panel--request">
               <figcaption>Requête reçue par le proxy</figcaption>
               <pre className="mono">{request ?? '// En attente d’un appel'}</pre>
             </figure>
 
-            <figure className="audit__panel">
+            <figure className="audit__panel audit__panel--log">
               <figcaption>
                 Journal d’audit signé
-                <button type="button" className="audit__tamper" disabled={!entries.length} onClick={tamper}>
+                <button type="button" className="audit__tamper" disabled={!entries.length} onClick={tamper} data-danger="">
                   Falsifier la dernière ligne
                 </button>
               </figcaption>
               {entries.length === 0 ? (
-                <p className="audit__empty">Chaque appel ajoute ici une ligne, signée avec une clé HMAC-SHA256 générée pour cette page.</p>
+                <p className="audit__empty">
+                  Chaque appel ajoute ici une ligne, signée avec une clé HMAC-SHA256 générée pour cette page.
+                </p>
               ) : (
                 <ol className="audit__log mono" aria-live="polite">
                   {entries.map(({ line, sig, valid }) => (
@@ -156,6 +188,14 @@ export function AuditProxy() {
                         <span>hmac {sig.slice(0, 24)}…</span>
                         <span className="audit__verdict">{valid ? 'signature valide' : 'signature invalide'}</span>
                       </div>
+                      {!valid && (
+                        <>
+                          <MarkerStrike className="audit__strike" />
+                          <span className="audit__forged hand" aria-hidden="true">
+                            falsifié
+                          </span>
+                        </>
+                      )}
                     </li>
                   ))}
                 </ol>
@@ -165,14 +205,17 @@ export function AuditProxy() {
         </div>
 
         <div className="audit__facts">
-          <dl className="audit__numbers">
-            {mcpAudit.facts.map((fact) => (
-              <div key={fact.label}>
-                <dt>{fact.label}</dt>
-                <dd>{fact.value}</dd>
-              </div>
-            ))}
-          </dl>
+          <div className="results">
+            <h3 className="results__title">Résultats</h3>
+            <dl className="results__list">
+              {mcpAudit.facts.map((fact) => (
+                <div key={fact.label}>
+                  <dt>{fact.label}</dt>
+                  <dd>{fact.value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
           <div className="audit__text">
             <h3>Dans le vrai projet</h3>
             <ul className="audit__features">
@@ -183,7 +226,7 @@ export function AuditProxy() {
             {mcpAudit.ecosystem.map((paragraph) => (
               <p key={paragraph}>{paragraph}</p>
             ))}
-            <a className="btn" href={mcpAudit.repo} target="_blank" rel="noreferrer">
+            <a className="menu-btn menu-btn--framed" href={mcpAudit.repo} target="_blank" rel="noreferrer">
               Voir mcp-audit sur GitHub
             </a>
           </div>

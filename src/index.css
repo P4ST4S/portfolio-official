@@ -1,63 +1,93 @@
-/* Tokens: security-paper daylight, and the same document under a UV lamp. */
+/* Two worlds: the town in the sea mist, and the same town once the siren has sounded. */
 :root {
-  --paper: #e9ece8;
-  --paper-deep: #dde3df;
-  --ink: #1a1f3a;
-  --ink-soft: #4b5170;
-  --rule: color-mix(in oklab, var(--ink) 16%, transparent);
-  --guil-a: #8eb0c3;
-  --guil-b: #cfa0b5;
-  --bordeaux: #8a1538;
-  --blue: #23468c;
-  --green: #17734f;
-  --violet: #5b3a9c;
-  --ok: #17734f;
-  --fail: #b3261e;
-  --fluo: transparent;
-  --uv: 0;
+  --bg: #bfc4c8;
+  --bg-2: #b2b8bd;
+  --bg-3: #cdd1d4;
+  --ink: #17191b;
+  --ink-2: #393d41;
+  --ink-3: #5c6166;
+  --lamp: #e8a64e;
+  --rule: color-mix(in oklab, var(--ink) 20%, transparent);
+  --red: #8f1d14;
+  --marker: #a8231b;
+  --rust: #7a3b1e;
+  --fine: #5f7a4c;
+  --caution: #9a7a22;
+  --danger: #a8231b;
 
-  --console-bg: #1a1f3a;
-  --console-ink: #dfe4f5;
-  --console-dim: #8890b5;
+  /* Dark "item screen" panels look the same in both worlds */
+  --panel: #0f0e0d;
+  --panel-2: #181615;
+  --panel-ink: #e6e0d3;
+  --panel-soft: #a59e91;
+  --panel-rule: #34302b;
 
-  --font-sans: 'Anybody', ui-sans-serif, system-ui, sans-serif;
-  --font-mono: 'Martian Mono', ui-monospace, 'SF Mono', monospace;
+  --paper: #d6cdb7;
+  --paper-ink: #29241f;
+  --paper-soft: #5c5247;
 
-  --fs-0: 0.8125rem;
-  --fs-1: 1rem;
-  --fs-2: 1.125rem;
-  --fs-3: 1.3125rem;
-  --fs-4: 1.75rem;
-  --fs-5: 2.25rem;
-  --fs-title: clamp(3rem, 9vw, 7.5rem);
+  --fog-tint: 0.95 0.95 0.94;
+  --fog-opacity: 0.85;
+  --grain-opacity: 0.08;
+  --vignette: rgb(0 0 0 / 0.22);
+
+  --font-display: 'IM Fell English', 'Iowan Old Style', Georgia, serif;
+  --font-ui: 'Jost', 'Futura', 'Avenir Next', system-ui, sans-serif;
+  --font-body: 'EB Garamond', 'Iowan Old Style', Georgia, serif;
+  --font-mono: 'Courier Prime', 'Courier New', ui-monospace, monospace;
+  --font-hand: 'Covered By Your Grace', 'Segoe Print', 'Bradley Hand', cursive;
+
+  --fs-0: 0.9375rem;
+  --fs-1: 1.0625rem;
+  --fs-2: 1.25rem;
+  --fs-3: 1.5rem;
+  --fs-4: 2rem;
+  --fs-5: 2.75rem;
+  --fs-title: clamp(2.5rem, 6.4vw, 5.25rem);
 
   --gutter: clamp(1rem, 4vw, 3rem);
-  --max: 1320px;
+  --max: 1280px;
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-stamp: cubic-bezier(0.5, 0, 0.75, 0);
+
+  /* Procedural textures, drawn by the browser from SVG noise: no image assets. */
+  --tex-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .5 0 0 0 0 .5 0 0 0 0 .5 0 0 0 1.6 -.35'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  --tex-paper: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='640' height='640'%3E%3Cfilter id='s' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.009' numOctaves='4' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .25 0 0 0 0 .14 0 0 0 1.25 -.5'/%3E%3C/filter%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='1' seed='9' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .2 0 0 0 0 .18 0 0 0 0 .15 0 0 0 0 .1'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)'/%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  --tex-rust: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='520' height='520'%3E%3Cfilter id='r' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.018 .03' numOctaves='5' seed='11' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .16 0 0 0 0 .07 0 0 0 1.7 -.78'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23r)'/%3E%3C/svg%3E");
+  --tex-fog: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='560' preserveAspectRatio='none'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0032 .011' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .9 0 0 0 0 .93 0 0 0 0 .95 0 0 0 1.7 -.62'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  --tex-fog-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1100' height='460' preserveAspectRatio='none'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0055 .02' numOctaves='3' seed='21' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .93 0 0 0 0 .95 0 0 0 0 .97 0 0 0 1.9 -.75'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  --scene: url('/scenes/road-fog.svg');
 
   color-scheme: light;
 }
 
-:root[data-theme='uv'] {
-  --paper: #0e0b1f;
-  --paper-deep: #161130;
-  --ink: #ece8ff;
-  --ink-soft: #a59ccf;
-  --guil-a: #3ff0c4;
-  --guil-b: #ff5fd2;
-  --bordeaux: #ff6b9a;
-  --blue: #7aa8ff;
-  --green: #3ff0c4;
-  --violet: #c9a0ff;
-  --ok: #3ff0c4;
-  --fail: #ff7272;
-  --fluo: #3ff0c4;
-  --uv: 1;
+:root[data-theme='other'] {
+  --bg: #0b0606;
+  --bg-2: #140808;
+  --bg-3: #1d0a09;
+  --ink: #ecdcd6;
+  --ink-2: #c0a7a0;
+  --ink-3: #8f726b;
+  --lamp: #ff5a3c;
+  --rule: color-mix(in oklab, var(--ink) 16%, transparent);
+  --red: #e0402c;
+  --marker: #d33522;
+  --rust: #a0522d;
+  --fine: #7f9a6a;
+  --caution: #c9a24a;
+  --danger: #d0402e;
 
-  --console-bg: #050310;
-  --console-ink: #ece8ff;
-  --console-dim: #7d74a8;
+  --paper: #bfb194;
+  --paper-ink: #241e18;
+  --paper-soft: #54483b;
+
+  --fog-opacity: 0.7;
+  --grain-opacity: 0.12;
+  --vignette: rgb(0 0 0 / 0.7);
+
+  /* smoke instead of fog: same noise, dried-blood tint */
+  --tex-fog: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1400' height='560' preserveAspectRatio='none'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0032 .011' numOctaves='4' seed='7' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .42 0 0 0 0 .03 0 0 0 0 .02 0 0 0 1.5 -.6'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  --tex-fog-2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1100' height='460' preserveAspectRatio='none'%3E%3Cfilter id='f' x='0' y='0' width='100%25' height='100%25'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.0055 .02' numOctaves='3' seed='21' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .02 0 0 0 0 .02 0 0 0 1.7 -.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23f)'/%3E%3C/svg%3E");
+  --scene: url('/scenes/road-other.svg');
 
   color-scheme: dark;
 }
@@ -76,14 +106,16 @@ html {
 
 body {
   margin: 0;
-  background: var(--paper);
+  background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-body);
   font-size: var(--fs-2);
-  line-height: 1.55;
-  font-stretch: 100%;
+  line-height: 1.6;
   overflow-x: clip;
   -webkit-font-smoothing: antialiased;
+  transition:
+    background-color 0.6s,
+    color 0.6s;
 }
 
 h1,
@@ -96,6 +128,13 @@ ol,
 ul,
 figure {
   margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
 }
 
 ol,
@@ -114,19 +153,21 @@ button {
 }
 
 ::selection {
-  background: var(--bordeaux);
-  color: var(--paper);
+  background: var(--red);
+  color: #f1ebe0;
 }
 
 :focus-visible {
-  outline: 2px solid var(--bordeaux);
-  outline-offset: 3px;
-  border-radius: 2px;
+  outline: 2px dashed var(--red);
+  outline-offset: 4px;
 }
 
 .mono {
   font-family: var(--font-mono);
-  font-stretch: 87.5%;
+}
+
+.hand {
+  font-family: var(--font-hand);
 }
 
 .sr-only {
@@ -145,108 +186,260 @@ button {
   padding-inline: var(--gutter);
 }
 
+main {
+  position: relative;
+  z-index: 1;
+}
+
 .section {
-  padding-block: clamp(5rem, 12vw, 10rem);
+  padding-block: clamp(5rem, 11vw, 9rem);
   position: relative;
 }
 
-/* Section titles stretch from condensed to wide as they enter the viewport. */
-.section-title {
-  font-size: var(--fs-title);
-  font-weight: 800;
-  font-stretch: 125%;
-  line-height: 0.9;
-  letter-spacing: -0.02em;
+/* ------------------------------------------------------------------ headings
+   In the voice of the SH2 manual: tracked caps, an italic aside, a thin red rule,
+   and a red ghost of the word slipping behind it. */
+.sh-head {
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.sh-head__kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-2);
+  letter-spacing: 0.32em;
+  color: var(--red);
+  margin-bottom: 0.7rem;
+}
+
+.sh-head__kicker::before {
+  content: '';
+  width: 2.5rem;
+  border-top: 1px solid var(--red);
+}
+
+.sh-head__title {
+  position: relative;
+  isolation: isolate;
+  display: inline-block;
+  font-size: var(--fs-title);
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
   overflow-wrap: anywhere;
 }
 
-.section-lead {
+.sh-head__title::after {
+  content: attr(data-ghost);
+  position: absolute;
+  left: 0.9em;
+  top: 0.32em;
+  z-index: -1;
+  font-style: italic;
+  text-transform: lowercase;
+  letter-spacing: 0.02em;
+  font-size: 0.82em;
+  color: var(--red);
+  opacity: 0.28;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.sh-lead {
   font-size: var(--fs-3);
-  max-width: 34em;
-  color: var(--ink-soft);
   line-height: 1.5;
+  max-width: 34em;
+  color: var(--ink-2);
 }
 
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    .section-title {
-      animation: title-stretch linear both;
+    .sh-head__title {
+      animation: emerge linear both;
       animation-timeline: view();
-      animation-range: entry 0% cover 35%;
+      animation-range: entry 0% cover 30%;
     }
   }
 }
 
-@keyframes title-stretch {
+/* Out of the fog: blurred and spread, then sharp. */
+@keyframes emerge {
   from {
-    font-stretch: 50%;
-    font-weight: 300;
-    opacity: 0.2;
+    filter: blur(10px);
+    opacity: 0.1;
+    letter-spacing: 0.4em;
   }
   to {
-    font-stretch: 125%;
-    font-weight: 800;
+    filter: blur(0);
     opacity: 1;
+    letter-spacing: 0.14em;
   }
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    translate: 0 1.5rem;
+    translate: 0 1.25rem;
   }
 }
 
-/* Buttons */
-.btn {
+@keyframes flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  8% {
+    opacity: 0.35;
+  }
+  12% {
+    opacity: 1;
+  }
+  52% {
+    opacity: 0.8;
+  }
+  54% {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ menu buttons
+   Title-screen options: dim until chosen, a red square marks the one you are on. */
+.menu-btn {
+  --marker-size: 0.55em;
+  position: relative;
   display: inline-flex;
   align-items: center;
-  gap: 0.6em;
-  padding: 0.85em 1.4em;
-  border: 1.5px solid var(--ink);
-  border-radius: 999px;
-  background: var(--ink);
-  color: var(--paper);
-  font-weight: 600;
-  font-stretch: 110%;
+  gap: 0.7em;
+  padding: 0.35em 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-display);
+  font-size: var(--fs-3);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   text-decoration: none;
+  color: var(--ink-2);
   cursor: pointer;
   transition:
-    transform 0.25s var(--ease-out),
-    background-color 0.25s,
-    color 0.25s;
+    color 0.25s,
+    letter-spacing 0.5s var(--ease-out);
 }
 
-.btn:hover {
-  transform: translateY(-2px);
+.menu-btn::before {
+  content: '';
+  width: var(--marker-size);
+  height: var(--marker-size);
+  background: var(--red);
+  opacity: 0;
+  scale: 0.4;
+  transition:
+    opacity 0.2s,
+    scale 0.3s var(--ease-out);
 }
 
-.btn:active {
-  transform: translateY(0) scale(0.98);
-}
-
-.btn--ghost {
-  background: transparent;
+.menu-btn:hover,
+.menu-btn:focus-visible,
+.menu-btn--primary {
   color: var(--ink);
 }
 
-.btn--ghost:hover {
-  background: var(--ink);
-  color: var(--paper);
+.menu-btn:hover,
+.menu-btn:focus-visible {
+  letter-spacing: 0.2em;
+  animation: flicker 0.6s steps(1) 1;
 }
 
-.btn svg {
-  width: 1.1em;
-  height: 1.1em;
+.menu-btn:hover::before,
+.menu-btn:focus-visible::before,
+.menu-btn--primary::before {
+  opacity: 1;
+  scale: 1;
 }
 
-/* Scroll progress, read as a strip of microprint at the top edge. */
+.menu-btn:focus-visible {
+  outline-offset: 6px;
+}
+
+.menu-btn svg {
+  width: 0.8em;
+  height: 0.8em;
+}
+
+/* A framed variant for calls to action inside sections */
+.menu-btn--framed {
+  padding: 0.7em 1.4em;
+  border: 1px solid var(--rule);
+  font-size: var(--fs-1);
+  color: var(--ink);
+  background: color-mix(in oklab, var(--bg) 60%, transparent);
+}
+
+.menu-btn--framed:hover,
+.menu-btn--framed:focus-visible {
+  border-color: var(--red);
+}
+
+/* ------------------------------------------------------------------ radio static divider */
+.static {
+  position: relative;
+  height: 36px;
+  margin-inline: auto;
+  max-width: var(--max);
+  mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent);
+}
+
+.static::before {
+  content: '';
+  position: absolute;
+  inset-inline: 0;
+  top: 50%;
+  border-top: 1px solid color-mix(in oklab, var(--ink) 35%, transparent);
+}
+
+.static::after {
+  content: '';
+  position: absolute;
+  inset: 8px 0;
+  background: var(--tex-grain);
+  background-size: 120px 120px;
+  opacity: 0;
+  animation: crackle 9s steps(1) infinite;
+}
+
+.static:nth-of-type(2n)::after {
+  animation-delay: -4s;
+}
+
+@keyframes crackle {
+  0%,
+  86%,
+  100% {
+    opacity: 0;
+    background-position: 0 0;
+  }
+  87% {
+    opacity: 0.9;
+    background-position: 40px 7px;
+  }
+  89% {
+    opacity: 0.3;
+    background-position: -30px 3px;
+  }
+  91% {
+    opacity: 0.8;
+    background-position: 12px -5px;
+  }
+}
+
+/* ------------------------------------------------------------------ scroll progress */
 .progress {
   position: fixed;
   inset: 0 0 auto;
-  height: 3px;
-  background: var(--bordeaux);
+  height: 2px;
+  background: var(--red);
   transform-origin: left;
   transform: scaleX(0);
   z-index: 60;
@@ -265,113 +458,178 @@ button {
   }
 }
 
-/* Nav */
+/* ------------------------------------------------------------------ nav */
+/* A dark band in both worlds: it is the top bar of the letterbox. */
 .nav {
+  --ink: #e4dfd7;
+  --ink-3: #9a958d;
+  --rule: rgb(255 255 255 / 0.12);
   position: fixed;
   inset: 0 0 auto;
   z-index: 50;
-  padding-block: 0.9rem;
-  backdrop-filter: blur(14px) saturate(1.4);
-  background: color-mix(in oklab, var(--paper) 72%, transparent);
-  border-bottom: 1px solid var(--rule);
+  height: 4.25rem;
+  display: flex;
+  align-items: center;
+  backdrop-filter: blur(8px);
+  background: rgb(5 5 5 / 0.88);
+  border-bottom: 1px solid rgb(255 255 255 / 0.06);
+  color: var(--ink);
 }
 
 .nav__inner {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1.75rem;
 }
 
 .nav__brand {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
-  font-weight: 700;
-  font-stretch: 120%;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-size: var(--fs-1);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   text-decoration: none;
   margin-right: auto;
+  white-space: nowrap;
 }
 
 .nav__mark {
-  width: 2rem;
-  height: 2rem;
+  width: 1.9rem;
+  height: 1.9rem;
 }
 
 .nav__links {
   display: flex;
-  gap: 1.75rem;
-  font-size: var(--fs-1);
+  gap: 1.6rem;
+  font-family: var(--font-ui);
+  font-weight: 400;
+  font-size: var(--fs-0);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
 }
 
 .nav__links a {
+  position: relative;
+  white-space: nowrap;
   text-decoration: none;
-  color: var(--ink-soft);
-  transition:
-    color 0.2s,
-    font-stretch 0.3s var(--ease-out);
+  color: var(--ink-3);
+  transition: color 0.2s;
 }
 
-.nav__links a:hover {
+.nav__links a::before {
+  content: '';
+  position: absolute;
+  left: -0.95em;
+  top: 50%;
+  width: 0.45em;
+  height: 0.45em;
+  translate: 0 -50%;
+  background: #e0402c;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.nav__links a:hover,
+.nav__links a:focus-visible {
   color: var(--ink);
-  font-stretch: 125%;
+  animation: flicker 0.5s steps(1) 1;
 }
 
-.uv-toggle {
+.nav__links a:hover::before,
+.nav__links a:focus-visible::before {
+  opacity: 1;
+}
+
+.nav__toggles {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.toggle {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.45rem 0.9rem 0.45rem 0.55rem;
-  border-radius: 999px;
-  border: 1.5px solid var(--rule);
+  padding: 0.4rem 0.8rem 0.4rem 0.55rem;
+  border: 1px solid var(--rule);
   background: transparent;
-  font-size: var(--fs-0);
-  font-weight: 600;
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
   cursor: pointer;
+  white-space: nowrap;
   transition:
     border-color 0.2s,
-    box-shadow 0.4s;
+    background-color 0.2s;
 }
 
-.uv-toggle:hover {
-  border-color: var(--ink);
+.toggle:hover {
+  border-color: var(--ink-3);
 }
 
-.uv-toggle__bulb {
-  width: 1.4rem;
-  height: 1.4rem;
+.toggle[aria-pressed='true'] {
+  border-color: #e0402c;
+}
+
+.toggle__icon {
+  width: 1.15rem;
+  height: 1.15rem;
+  flex: none;
+}
+
+.toggle--siren .toggle__icon {
+  color: #e0402c;
+}
+
+.toggle--radio .toggle__led {
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
-  background: radial-gradient(circle at 35% 35%, #d9c8ff, #7b4dff 60%, #3b1d8f);
-  box-shadow: 0 0 0 0 transparent;
-  transition: box-shadow 0.4s;
+  background: var(--ink-3);
+  opacity: 0.5;
 }
 
-[data-theme='uv'] .uv-toggle__bulb {
-  box-shadow:
-    0 0 12px 3px #9b6bff,
-    0 0 30px 8px #7b4dff88;
+.toggle--radio[aria-pressed='true'] .toggle__led {
+  background: #e0402c;
+  opacity: 1;
+  box-shadow: 0 0 8px #e0402c;
+  animation: flicker 1.7s steps(1) infinite;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 1180px) {
+  .nav__name {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
   .nav__links {
     display: none;
   }
 }
 
-.nav__brand,
-.uv-toggle {
-  white-space: nowrap;
+@media (max-width: 560px) {
+  .sh-head__kicker {
+    letter-spacing: 0.18em;
+  }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .nav__inner {
-    gap: 1rem;
+    gap: 0.75rem;
   }
 
-  .uv-toggle {
+  .nav__name {
+    display: none;
+  }
+
+  .toggle {
     padding: 0.45rem;
   }
 
-  .uv-toggle__label {
+  .toggle__label {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -380,89 +638,269 @@ button {
   }
 }
 
-/* Theme switch: the UV lamp light spreads from the button. */
+/* The siren: the new world bleeds in from the button, the old one flickers out. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
 }
 
+::view-transition-old(root) {
+  animation: siren-out 0.9s steps(1) both;
+}
+
 ::view-transition-new(root) {
-  animation: lamp 0.7s var(--ease-out);
+  animation: siren-in 0.9s var(--ease-out) both;
 }
 
-@keyframes lamp {
+@keyframes siren-out {
+  0% {
+    filter: none;
+  }
+  10% {
+    filter: brightness(1.6) contrast(1.4);
+  }
+  20% {
+    filter: brightness(0.5) sepia(1) hue-rotate(-40deg) saturate(3);
+  }
+  30% {
+    filter: none;
+  }
+  45% {
+    filter: brightness(0.4);
+  }
+}
+
+@keyframes siren-in {
   from {
-    clip-path: circle(0 at var(--lamp-x, 100%) var(--lamp-y, 0));
+    clip-path: circle(0 at var(--siren-x, 100%) var(--siren-y, 0));
   }
   to {
-    clip-path: circle(150vmax at var(--lamp-x, 100%) var(--lamp-y, 0));
+    clip-path: circle(150vmax at var(--siren-x, 100%) var(--siren-y, 0));
   }
 }
 
-/* Elements printed in invisible ink, only visible under the UV lamp. */
-.uv-ink {
-  color: var(--fluo);
-  opacity: var(--uv);
-  transition: opacity 0.6s;
-  text-shadow: 0 0 calc(var(--uv) * 12px) var(--fluo);
-}
-
-/* Footer */
-.footer {
-  border-top: 1px solid var(--rule);
-  padding-block: 2.5rem 3rem;
-  font-size: var(--fs-0);
-  color: var(--ink-soft);
-}
-
-.footer__mrz {
+/* ------------------------------------------------------------------ atmosphere
+   Fixed behind the page: fog (or smoke) drifting, ash (or embers) on a canvas.
+   Above the page: film grain, a vignette and, in the other world, the flashlight. */
+.atmo {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   overflow: hidden;
-  white-space: nowrap;
-  font-size: clamp(0.75rem, 1.6vw, 1rem);
-  letter-spacing: 0.12em;
-  color: var(--ink);
-  margin-bottom: 2rem;
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
 }
 
-.footer__mrz span {
-  display: inline-block;
-  padding-right: 3ch;
-  animation: marquee 40s linear infinite;
+.atmo__fog {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  background-repeat: repeat-x;
+  opacity: var(--fog-opacity);
+  will-change: transform;
+  mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent);
 }
 
-@keyframes marquee {
+.atmo__fog--far {
+  top: 8%;
+  height: 70%;
+  background-image: var(--tex-fog);
+  background-size: 1400px 100%;
+  animation: drift 120s linear infinite;
+}
+
+.atmo__fog--near {
+  bottom: -10%;
+  height: 60%;
+  background-image: var(--tex-fog-2);
+  background-size: 1100px 100%;
+  animation: drift 75s linear infinite reverse;
+  opacity: calc(var(--fog-opacity) * 0.8);
+}
+
+@keyframes drift {
   to {
-    transform: translateX(-100%);
+    transform: translateX(-50%);
   }
 }
 
-.footer__row {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 1rem 2rem;
+.grain {
+  position: fixed;
+  inset: -100px;
+  z-index: 70;
+  pointer-events: none;
+  background: var(--tex-grain);
+  background-size: 240px 240px;
+  opacity: var(--grain-opacity);
+  animation: grain 0.9s steps(6) infinite;
 }
 
-.footer__colophon {
-  max-width: 48em;
+@keyframes noise-shift {
+  0% {
+    background-position: 0 0;
+  }
+  25% {
+    background-position: -37px 22px;
+  }
+  50% {
+    background-position: 21px -48px;
+  }
+  75% {
+    background-position: -58px -14px;
+  }
+  100% {
+    background-position: 44px 31px;
+  }
 }
 
+@keyframes grain {
+  0% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-37px, 22px);
+  }
+  40% {
+    transform: translate(21px, -48px);
+  }
+  60% {
+    transform: translate(-58px, -14px);
+  }
+  80% {
+    transform: translate(44px, 31px);
+  }
+  100% {
+    transform: translate(9px, -27px);
+  }
+}
+
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 68;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 45%, transparent 55%, var(--vignette) 100%);
+}
+
+.flashlight {
+  position: fixed;
+  inset: 0;
+  z-index: 69;
+  pointer-events: none;
+  display: none;
+  background: radial-gradient(
+    circle at var(--fx, 50%) var(--fy, 45%),
+    transparent 0,
+    transparent 16vmax,
+    rgb(0 0 0 / 0.38) 38vmax,
+    rgb(0 0 0 / 0.55) 70vmax
+  );
+}
+
+[data-theme='other'] .flashlight {
+  display: block;
+}
+
+@media (pointer: coarse) {
+  .flashlight {
+    --fx: 50%;
+    --fy: 40%;
+  }
+}
+
+/* ------------------------------------------------------------------ red marker */
+.marker {
+  display: block;
+  overflow: visible;
+  fill: none;
+  stroke: var(--marker);
+  stroke-width: 6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  filter: url(#marker);
+  pointer-events: none;
+}
+
+.marker path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: marker-draw 0.7s var(--ease-out) var(--d, 0s) both;
+}
+
+@keyframes marker-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ ash in front of the camera */
+.motes {
+  position: fixed;
+  inset: 0;
+  z-index: 66;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* ------------------------------------------------------------------ inner monologue
+   Plain text at the bottom of the screen, the way Townfall prints Simon's thoughts. */
+.monologue {
+  position: fixed;
+  left: 50%;
+  bottom: clamp(1.5rem, 6vh, 3.5rem);
+  z-index: 67;
+  translate: -50% 0;
+  width: max-content;
+  max-width: min(36rem, calc(100vw - 2rem));
+  padding: 0.35rem 0.9rem;
+  font-family: var(--font-ui);
+  font-weight: 300;
+  font-size: 1.0625rem;
+  letter-spacing: 0.03em;
+  text-align: center;
+  color: #f1ece4;
+  background: rgb(0 0 0 / 0.55);
+  text-shadow: 0 1px 2px rgb(0 0 0 / 0.8);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.9s;
+}
+
+.monologue.is-on {
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------------ reduced motion */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 
+  /* delays too: with fill-mode both, an element sits on its first keyframe (often invisible) until the delay ends */
   *,
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
   }
 
+  .atmo__fog,
+  .grain,
+  .hero__mist {
+    animation: none !important;
+  }
+
+  .marker path {
+    animation: none !important;
+    stroke-dashoffset: 0;
+  }
+
+  ::view-transition-old(root),
   ::view-transition-new(root) {
-    animation: none;
+    animation: none !important;
   }
 }

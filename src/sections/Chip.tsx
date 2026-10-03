@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import { Waves } from '../components/Guilloche'
+import { MarkerLoop } from '../components/Marker'
+import { SectionHead } from '../components/SectionHead'
 import { mrz } from '../data/content'
 import './Chip.css'
 
@@ -11,26 +12,31 @@ const STEPS = [
     title: 'Scanner le document',
     body: 'L’utilisateur cadre son passeport ou sa carte d’identité. Le SDK le guide jusqu’à une capture exploitable, sans saisie manuelle.',
     screen: 'Cadrez la bande en bas du document',
+    signal: 'aucun signal',
   },
   {
     title: 'Poser le téléphone sur la puce',
     body: 'La lecture NFC démarre dès que le téléphone touche le document. L’échange avec la puce est chiffré : sans le document physique, rien ne se passe.',
     screen: 'Gardez le téléphone sur la puce',
+    signal: 'accroche…',
   },
   {
     title: 'Lire les données de l’État',
     body: 'Identité et photo sont lues directement dans la puce, telles que l’autorité émettrice les a écrites. Pas d’OCR approximatif sur ces données-là.',
     screen: 'Lecture des données',
+    signal: 'signal faible',
   },
   {
     title: 'Prouver l’authenticité',
     body: 'Le SDK vérifie que la puce a bien été émise par un État, qu’elle n’a pas été modifiée et qu’il ne s’agit pas d’un clone.',
     screen: 'Vérification du document',
+    signal: 'signal net',
   },
   {
     title: 'Livré en quatre SDK',
     body: 'Flutter, Kotlin, Swift et React Native, pour s’intégrer dans les parcours KYC des clients. En production chez un client majeur, pour plusieurs centaines d’utilisateurs.',
     screen: 'Document vérifié',
+    signal: 'verrouillé',
   },
 ]
 
@@ -51,13 +57,13 @@ export function Chip() {
     return () => observer.disconnect()
   }, [])
 
+  const last = STEPS.length - 1
+
   return (
-    <section className="section nfc" id="nfc" aria-labelledby="nfc-title">
+    <section className="section nfc" id="nfc" aria-labelledby="nfc-title" data-monologue="La puce répond. Il ne faut plus bouger.">
       <div className="wrap">
-        <h2 className="section-title" id="nfc-title">
-          Lire une puce NFC
-        </h2>
-        <p className="section-lead">
+        <SectionHead id="nfc-title" kicker="fréquence 13,56 MHz" title="Lire une puce NFC" />
+        <p className="sh-lead">
           Chez Datakeen, j’ai conçu de zéro le SDK mobile qui lit la puce des passeports et des cartes
           d’identité pendant un parcours KYC. Voici ce que vit l’utilisateur, du scan à la vérification.
         </p>
@@ -66,7 +72,6 @@ export function Chip() {
           <div className="nfc__sticky">
             <div className="nfc__stage" data-step={active} aria-hidden="true">
               <div className="nfc__doc">
-                <Waves className="nfc__doc-waves" />
                 <span className="nfc__doc-title">Passeport</span>
                 <svg className="nfc__doc-chip" viewBox="0 0 40 26">
                   <rect x="1" y="1" width="38" height="24" rx="3" fill="none" stroke="currentColor" strokeWidth="1.6" />
@@ -78,22 +83,12 @@ export function Chip() {
                   <span>{MRZ_1}</span>
                   <span>{MRZ_2}</span>
                 </div>
-                <span className="nfc__doc-seal">Vérifié</span>
-              </div>
-
-              <div className="nfc__phone">
-                <div className="nfc__notch" />
-                <div className="nfc__screen">
-                  <span
-                    className="nfc__ring-progress"
-                    style={{ '--p': (active + 1) / STEPS.length } as CSSProperties}
-                  >
-                    {active + 1}/{STEPS.length}
+                {active === last && (
+                  <span className="nfc__doc-seal">
+                    <span className="hand">vérifié</span>
+                    <MarkerLoop seed={5} />
                   </span>
-                  <span key={active} className="nfc__screen-text">
-                    {STEPS[active].screen}
-                  </span>
-                </div>
+                )}
               </div>
 
               <span className="nfc__rings">
@@ -101,6 +96,36 @@ export function Chip() {
                 <span />
                 <span />
               </span>
+
+              {/* A pocket television tuned to the chip's frequency, after Townfall's CRTV */}
+              <div className="tv">
+                <span className="tv__antenna" />
+                <div className="tv__bezel">
+                  <div className="tv__screen" style={{ '--noise': (last - active) / last } as CSSProperties}>
+                    <div className="tv__static" />
+                    <div className="tv__picture">
+                      <span className="tv__meter">
+                        {STEPS.map((step, i) => (
+                          <i key={step.title} className={i <= active ? 'is-on' : undefined} />
+                        ))}
+                      </span>
+                      <span key={active} className="tv__text">
+                        {STEPS[active].screen}
+                      </span>
+                    </div>
+                    <div className="tv__scanlines" />
+                  </div>
+                </div>
+                <div className="tv__panel">
+                  <span className="tv__brand">NFC·TV</span>
+                  <span className="tv__freq mono">
+                    13.56 <small>MHz</small>
+                  </span>
+                  <span className="tv__dial" style={{ '--turn': `${active * 38 - 70}deg` } as CSSProperties} />
+                  <span className="tv__grille" />
+                  <span className="tv__signal mono">{STEPS[active].signal}</span>
+                </div>
+              </div>
 
               <ul className="nfc__sdks">
                 {['Flutter', 'Kotlin', 'Swift', 'React Native'].map((sdk, i) => (
@@ -115,7 +140,7 @@ export function Chip() {
           <ol className="nfc__steps" ref={listRef}>
             {STEPS.map((step, i) => (
               <li key={step.title} data-step={i} className={i === active ? 'is-active' : undefined}>
-                <span className="nfc__num">{i + 1}</span>
+                <span className="nfc__num hand">{i + 1}</span>
                 <h3>{step.title}</h3>
                 <p>{step.body}</p>
               </li>

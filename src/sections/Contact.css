@@ -1,41 +1,241 @@
-.contact__links {
-  margin-top: clamp(2.5rem, 6vw, 5rem);
-  border-bottom: 1px solid var(--rule);
+/* ------------------------------------------------------------------ save point */
+.save-point__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  align-items: center;
 }
 
-.contact__links li {
-  border-top: 1px solid var(--rule);
+/* A stretch of damp plaster wall, streaked where the rain got in */
+.save-point__wall {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 37px, rgb(0 0 0 / 0.05) 37px 39px, transparent 39px 83px),
+    linear-gradient(180deg, transparent 55%, rgb(40 30 20 / 0.18)),
+    linear-gradient(170deg, #9ea3a6, #7f8589);
+  box-shadow: inset 0 0 70px rgb(0 0 0 / 0.4);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent),
+    linear-gradient(transparent, #000 10%, #000 90%, transparent);
+  mask-composite: intersect;
 }
 
-.contact__links a {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem 2rem;
-  padding-block: clamp(1rem, 2.5vw, 1.75rem);
+.save-point__wall::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--tex-paper) 0 0 / 700px;
+  mix-blend-mode: multiply;
+  opacity: 0.6;
+}
+
+[data-theme='other'] .save-point__wall {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 37px, rgb(0 0 0 / 0.25) 37px 39px, transparent 39px 83px),
+    linear-gradient(170deg, #2e0b08, #130404);
+}
+
+[data-theme='other'] .save-point__wall::before {
+  background: var(--tex-rust) 0 0 / 520px;
+  mix-blend-mode: screen;
+  opacity: 0.35;
+}
+
+.save-point__square {
+  position: relative;
+  width: 42%;
+  aspect-ratio: 1;
+  background: #8f1d14;
+  filter: url(#paint);
+  rotate: 2deg;
+  box-shadow: inset 0 0 18px rgb(0 0 0 / 0.35);
+}
+
+/* the paint ran before it dried */
+.save-point__square::before,
+.save-point__square::after {
+  content: '';
+  position: absolute;
+  top: 98%;
+  width: 5px;
+  border-radius: 0 0 4px 4px;
+  background: #8f1d14;
+}
+
+.save-point__square::before {
+  left: 18%;
+  height: 22%;
+}
+
+.save-point__square::after {
+  left: 63%;
+  height: 34%;
+  width: 4px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .save-point__square {
+    animation: breathe 5s ease-in-out infinite;
+  }
+}
+
+@keyframes breathe {
+  50% {
+    box-shadow:
+      inset 0 0 18px rgb(0 0 0 / 0.35),
+      0 0 40px 4px rgb(160 30 20 / 0.35);
+  }
+}
+
+/* The game's question, in its text box */
+.save-point__box {
+  display: inline-block;
+  padding: 0.75rem 1.1rem;
+  margin-bottom: 1.5rem;
+  background: var(--panel);
+  color: var(--panel-ink);
+  border: 1px solid var(--panel-rule);
+  font-size: var(--fs-1);
+}
+
+.save-point__links {
+  margin-top: clamp(2rem, 5vw, 3.5rem);
+  display: grid;
+  gap: 0.25rem;
+}
+
+.save-point__links a {
+  position: relative;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.5rem 0 0.5rem 2.2rem;
   text-decoration: none;
 }
 
-.contact__label {
-  font-size: clamp(2.75rem, 10vw, 8.5rem);
-  font-weight: 800;
-  font-stretch: 90%;
-  line-height: 0.95;
-  letter-spacing: -0.02em;
+.save-point__links a::before {
+  content: '';
+  position: absolute;
+  left: 0.2rem;
+  top: 2.1rem;
+  width: 1rem;
+  height: 1rem;
+  translate: 0 -50%;
+  background: var(--red);
+  scale: 0.3;
+  opacity: 0;
   transition:
-    font-stretch 0.6s var(--ease-out),
-    color 0.3s;
+    opacity 0.2s,
+    scale 0.3s var(--ease-out);
 }
 
-.contact__links a:hover .contact__label,
-.contact__links a:focus-visible .contact__label {
-  font-stretch: 150%;
-  color: var(--bordeaux);
+.save-point__label {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 7vw, 5.5rem);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  transition:
+    color 0.25s,
+    letter-spacing 0.6s var(--ease-out);
 }
 
-.contact__handle {
+.save-point__handle {
   font-family: var(--font-mono);
-  font-stretch: 75%;
-  color: var(--ink-soft);
+  font-size: var(--fs-1);
+  color: var(--ink-3);
+}
+
+.save-point__links a:hover::before,
+.save-point__links a:focus-visible::before {
+  opacity: 1;
+  scale: 1;
+}
+
+.save-point__links a:hover .save-point__label,
+.save-point__links a:focus-visible .save-point__label {
+  color: var(--ink);
+  letter-spacing: 0.16em;
+  animation: flicker 0.6s steps(1) 1;
+}
+
+@media (max-width: 800px) {
+  .save-point__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .save-point__wall {
+    max-width: 260px;
+    aspect-ratio: 1;
+  }
+}
+
+/* ------------------------------------------------------------------ end credits */
+.footer {
+  position: relative;
+  z-index: 1;
+  background: #050505;
+  color: #8d8a85;
+  padding-block: 0 3rem;
+  font-size: var(--fs-0);
+}
+
+.footer__mrz {
+  overflow: hidden;
+  white-space: nowrap;
+  padding-block: 0.9rem;
+  font-size: clamp(0.75rem, 1.6vw, 0.95rem);
+  letter-spacing: 0.14em;
+  color: #57534e;
+  border-bottom: 1px solid rgb(255 255 255 / 0.06);
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.footer__mrz span {
+  display: inline-block;
+  padding-right: 3ch;
+  animation: marquee 40s linear infinite;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.footer__end {
+  display: grid;
+  justify-items: center;
+  padding-block: clamp(4rem, 10vw, 7rem) clamp(3rem, 7vw, 5rem);
+}
+
+.footer__fin {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  letter-spacing: 0.5em;
+  margin-right: -0.5em;
+  text-transform: uppercase;
+  color: #e4dfd7;
+}
+
+.footer__ending {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-2);
+  letter-spacing: 0.4em;
+  color: #c4321f;
+}
+
+.footer__row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  font-family: var(--font-display);
+}
+
+.footer__colophon {
+  max-width: 52em;
 }
