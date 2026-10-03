@@ -48,15 +48,11 @@ export const mcpAudit = {
   ],
 }
 
-export type StampShape = 'circle' | 'rect' | 'oval' | 'octagon'
-
+// Each stop is shown as a save file on the load screen: where, and when it was written.
 export interface Stop {
   place: string
-  stampTop: string
-  stampBottom: string
-  stampDate: string
-  shape: StampShape
-  ink: 'bordeaux' | 'blue' | 'green' | 'violet'
+  location: string
+  saved: string
   period: string
   title: string
   summary: string
@@ -66,11 +62,8 @@ export interface Stop {
 export const journey: Stop[] = [
   {
     place: 'Paris',
-    stampTop: 'EPITECH',
-    stampBottom: 'PARIS',
-    stampDate: '2022',
-    shape: 'circle',
-    ink: 'blue',
+    location: 'EPITECH, Paris',
+    saved: '2022',
     period: '2022 à 2027',
     title: 'Master of Science in Information Technology, EPITECH Paris',
     summary: 'Spécialisation systèmes distribués, cybersécurité et machine learning.',
@@ -78,11 +71,8 @@ export const journey: Stop[] = [
   },
   {
     place: 'Stuttgart',
-    stampTop: 'ERASMUS',
-    stampBottom: 'STUTTGART',
-    stampDate: '2023',
-    shape: 'oval',
-    ink: 'green',
+    location: 'Erasmus, Stuttgart',
+    saved: '2023',
     period: '2023 à 2024',
     title: 'Erasmus à Stuttgart',
     summary: 'Une année d’échange universitaire en Allemagne, pendant le cursus EPITECH.',
@@ -90,11 +80,8 @@ export const journey: Stop[] = [
   },
   {
     place: 'Datakeen',
-    stampTop: 'DATAKEEN',
-    stampBottom: 'STAGE',
-    stampDate: '01·2024',
-    shape: 'rect',
-    ink: 'violet',
+    location: 'Datakeen, stage',
+    saved: '01·2024',
     period: 'Janvier à juin 2024',
     title: 'Développeur fullstack en stage, Datakeen',
     summary:
@@ -103,11 +90,8 @@ export const journey: Stop[] = [
   },
   {
     place: 'Datakeen',
-    stampTop: 'DATAKEEN',
-    stampBottom: 'FULLSTACK',
-    stampDate: '10·2024',
-    shape: 'octagon',
-    ink: 'bordeaux',
+    location: 'Datakeen, fullstack',
+    saved: '10·2024',
     period: 'Octobre 2024 à février 2026',
     title: 'Développeur fullstack, Datakeen',
     summary: 'J’ai porté le refacto de la plateforme KYC / KYB.',
@@ -120,11 +104,8 @@ export const journey: Stop[] = [
   },
   {
     place: 'Datakeen',
-    stampTop: 'DATAKEEN',
-    stampBottom: 'MOBILE CDI',
-    stampDate: '03·2026',
-    shape: 'circle',
-    ink: 'bordeaux',
+    location: 'Datakeen, mobile',
+    saved: '03·2026',
     period: 'Depuis mars 2026',
     title: 'Fullstack & Mobile Developer, Datakeen',
     summary:
@@ -218,12 +199,64 @@ export const projects: Project[] = [
   },
 ]
 
-export const skills: { area: string; items: string }[] = [
-  { area: 'Backend', items: 'Go, NestJS, TypeScript, Node.js, Python, REST, JSON-RPC' },
-  { area: 'Mobile', items: 'Kotlin, Swift, Flutter, React Native, bridges natifs C, NFC, Apple Vision, ML Kit' },
-  { area: 'Frontend', items: 'React, TypeScript, Tailwind, Playwright' },
-  { area: 'Cloud et CI', items: 'Docker, Kubernetes, GitLab CI/CD, GCP, GoReleaser, OIDC' },
-  { area: 'Observabilité', items: 'OpenTelemetry, Prometheus, Grafana' },
-  { area: 'Sécurité', items: 'mTLS, HMAC, OAuth 2.1, Model Context Protocol' },
-  { area: 'Langues', items: 'Français natif, anglais C1' },
+// Shown as the item screen. `item` is the inventory object standing in for the area,
+// `note` the line the game would print when you examine it.
+export interface Skill {
+  area: string
+  items: string
+  item: string
+  icon: 'pipe' | 'radio' | 'flashlight' | 'keys' | 'map' | 'lock' | 'letter'
+  note: string
+}
+
+export const skills: Skill[] = [
+  {
+    area: 'Backend',
+    items: 'Go, NestJS, TypeScript, Node.js, Python, REST, JSON-RPC',
+    item: 'Tuyau d’acier',
+    icon: 'pipe',
+    note: 'Lourd, sans fioritures. Il tient tout le reste.',
+  },
+  {
+    area: 'Mobile',
+    items: 'Kotlin, Swift, Flutter, React Native, bridges natifs C, NFC, Apple Vision, ML Kit',
+    item: 'Radio de poche',
+    icon: 'radio',
+    note: 'Elle capte ce que les puces murmurent.',
+  },
+  {
+    area: 'Frontend',
+    items: 'React, TypeScript, Tailwind, Playwright',
+    item: 'Lampe de poche',
+    icon: 'flashlight',
+    note: 'Ce que l’utilisateur voit, et ce qu’on vérifie à sa place.',
+  },
+  {
+    area: 'Cloud et CI',
+    items: 'Docker, Kubernetes, GitLab CI/CD, GCP, GoReleaser, OIDC',
+    item: 'Trousseau de clés',
+    icon: 'keys',
+    note: 'Chaque porte, de dev à la production.',
+  },
+  {
+    area: 'Observabilité',
+    items: 'OpenTelemetry, Prometheus, Grafana',
+    item: 'Carte de la ville',
+    icon: 'map',
+    note: 'Savoir où l’on est, même dans le brouillard.',
+  },
+  {
+    area: 'Sécurité',
+    items: 'mTLS, HMAC, OAuth 2.1, Model Context Protocol',
+    item: 'Cadenas',
+    icon: 'lock',
+    note: 'Ce qui doit rester fermé le reste.',
+  },
+  {
+    area: 'Langues',
+    items: 'Français natif, anglais C1',
+    item: 'Lettre',
+    icon: 'letter',
+    note: 'Écrite dans deux langues.',
+  },
 ]

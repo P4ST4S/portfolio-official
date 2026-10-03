@@ -1,172 +1,330 @@
+/* Title screen, letterboxed like the Townfall trailers: black bars, the road in the mist between them. */
 .hero {
+  --bar-top: 4.25rem;
+  --bar-bottom: clamp(3.25rem, 8vh, 5rem);
   position: relative;
-  padding-top: clamp(6.5rem, 12vh, 9rem);
-  padding-bottom: clamp(4rem, 8vw, 7rem);
+  min-height: 100svh;
+  padding: calc(var(--bar-top) + clamp(1.25rem, 4.5vh, 3.5rem)) 0 calc(var(--bar-bottom) + clamp(1.25rem, 4vh, 3rem));
+  display: grid;
+  align-items: center;
   overflow: clip;
+  isolation: isolate;
+  background: #050505;
 }
 
-.hero__rosette {
+.hero__frame {
   position: absolute;
-  width: min(1100px, 120vw);
-  aspect-ratio: 1;
-  top: -18%;
-  right: -28%;
-  opacity: 0.55;
-  pointer-events: none;
-  animation: spin 160s linear infinite;
+  inset: var(--bar-top) 0 var(--bar-bottom);
+  z-index: -1;
+  overflow: hidden;
+  background: var(--bg);
 }
 
-.hero__rosette path {
-  stroke-dasharray: 1;
-  animation: draw 3.2s var(--ease-out) both;
+.hero__scene {
+  position: absolute;
+  inset: 0;
+  background: var(--scene) center bottom / cover no-repeat;
+  animation: scene-in 2.4s var(--ease-out) both;
 }
 
-.hero__rosette g + g path {
-  animation-delay: 0.5s;
-}
-
-@keyframes spin {
-  to {
-    rotate: 360deg;
-  }
-}
-
-@keyframes draw {
+@keyframes scene-in {
   from {
-    stroke-dashoffset: 1;
+    opacity: 0;
+    scale: 1.06;
+    filter: blur(6px);
   }
-  to {
-    stroke-dashoffset: 0;
+}
+
+.hero__figure {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  fill: color-mix(in oklab, var(--ink) 55%, var(--bg));
+  opacity: 0;
+  animation: figure 26s 5s infinite;
+}
+
+[data-theme='other'] .hero__figure {
+  fill: #000;
+}
+
+@keyframes figure {
+  0%,
+  45% {
+    opacity: 0;
   }
+  55%,
+  72% {
+    opacity: 0.75;
+  }
+  80%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.hero__mist {
+  position: absolute;
+  left: 0;
+  width: 200%;
+  background-repeat: repeat-x;
+  pointer-events: none;
+  mask-image: linear-gradient(transparent, #000 30%, #000 70%, transparent);
+}
+
+.hero__mist--far {
+  top: 18%;
+  height: 55%;
+  background-image: var(--tex-fog);
+  background-size: 1400px 100%;
+  opacity: 0.75;
+  animation: drift 90s linear infinite;
+}
+
+.hero__mist--near {
+  bottom: -8%;
+  height: 50%;
+  background-image: var(--tex-fog-2);
+  background-size: 1100px 100%;
+  opacity: 0.6;
+  animation: drift 55s linear infinite reverse;
+}
+
+/* Keeps the left of the frame quiet enough to read on */
+.hero__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    color-mix(in oklab, var(--bg) 92%, transparent) 0%,
+    color-mix(in oklab, var(--bg) 78%, transparent) 36%,
+    transparent 62%
+  );
 }
 
 .hero__grid {
-  position: relative;
   display: grid;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: clamp(1rem, 2.5vw, 2rem);
-  row-gap: 2rem;
+  row-gap: 3rem;
+  align-items: center;
 }
 
-/* Name: letters arrive condensed and light, then settle wide and heavy. */
+.hero__intro {
+  grid-column: 1 / span 6;
+}
+
+.hero__overline {
+  font-family: var(--font-ui);
+  font-size: var(--fs-0);
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  margin-bottom: 1.25rem;
+  animation: rise 1.2s var(--ease-out) 0.8s both;
+}
+
 .hero__name {
-  grid-column: 1 / -1;
-  font-size: min(11.5vw, 10.5rem);
-  font-weight: 800;
-  line-height: 0.84;
-  letter-spacing: -0.035em;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  font-size: clamp(2.8rem, 5.9vw, 5.4rem);
+  line-height: 0.92;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.hero__word {
+.hero__line {
   display: block;
   white-space: nowrap;
+  animation: emerge-in 2.6s var(--ease-out) both;
+  animation-delay: calc(0.3s + var(--i) * 0.35s);
 }
 
-.hero__word + .hero__word {
-  padding-left: 12%;
+.hero__line + .hero__line {
+  padding-left: 0.45em;
 }
 
-.hero__letter {
-  display: inline-block;
-  font-stretch: 135%;
-  animation: letter-in 1.2s var(--ease-out) both;
-  animation-delay: calc(var(--i) * 45ms);
-}
-
-@keyframes letter-in {
+@keyframes emerge-in {
   from {
-    font-stretch: 50%;
-    font-weight: 150;
+    filter: blur(14px);
     opacity: 0;
-    translate: 0 0.25em;
+    letter-spacing: 0.35em;
   }
-}
-
-@supports (animation-timeline: scroll()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .hero__name {
-      animation: drift linear both;
-      animation-timeline: scroll(root);
-      animation-range: 0 90vh;
-    }
-  }
-}
-
-@keyframes drift {
   to {
-    translate: 0 -12vh;
-    opacity: 0.15;
+    filter: blur(0);
+    opacity: 1;
   }
 }
 
-.hero__copy {
-  grid-column: 1 / span 5;
-  padding-right: 1rem;
-  align-self: start;
-  padding-top: 1rem;
-  animation: rise 1s var(--ease-out) 0.6s both;
+.hero__worn {
+  position: relative;
+  display: inline-block;
+  isolation: isolate;
+  filter: url(#worn);
 }
 
-.hero__role {
-  font-size: var(--fs-3);
-  font-weight: 600;
-  font-stretch: 115%;
-  margin-bottom: 1rem;
+.hero__worn::after {
+  content: attr(data-ghost);
+  position: absolute;
+  left: 0.07em;
+  top: 0.04em;
+  z-index: -1;
+  color: var(--red);
+  opacity: 0.22;
+  animation: ghost 11s steps(1) infinite;
+}
+
+/* The red double slips sideways now and then, like a bad signal. */
+@keyframes ghost {
+  0%,
+  90%,
+  100% {
+    translate: 0 0;
+  }
+  91% {
+    translate: 0.08em 0;
+  }
+  93% {
+    translate: -0.05em 0;
+  }
+  95% {
+    translate: 0.03em 0;
+  }
+}
+
+/* Under the name, the handle in the red, letter-spaced script of the Townfall logo */
+.hero__handle {
+  margin: 0.7rem 0 1.2rem 0.15em;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.4rem, 2.6vw, 2.1rem);
+  letter-spacing: 0.55em;
+  color: var(--red);
+  animation: rise 1.4s var(--ease-out) 1.4s both;
 }
 
 .hero__lead {
-  font-size: var(--fs-2);
-  color: var(--ink-soft);
-  max-width: 32em;
-  margin-bottom: 2rem;
+  font-size: clamp(1.25rem, 1.6vw, 1.5rem);
+  line-height: 1.5;
+  max-width: 30em;
+  color: var(--ink-2);
+  margin-bottom: 1.5rem;
+  animation: rise 1.2s var(--ease-out) 1.6s both;
 }
 
-.hero__actions {
+.hero__menu {
+  display: grid;
+  justify-items: start;
+  gap: 0.15rem;
+  animation: rise 1.2s var(--ease-out) 1.9s both;
+}
+
+.hero__menu .menu-btn {
+  font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+}
+
+/* Credits in the bottom bar, as on a trailer frame */
+.hero__credits {
+  position: absolute;
+  inset: auto 0 0;
+  height: var(--bar-bottom);
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-inline: var(--gutter);
+  font-family: var(--font-display);
+  font-size: var(--fs-0);
+  color: #8d8a85;
 }
 
+.hero__press {
+  font-family: var(--font-ui);
+  font-size: 0.8125rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #c9c5be;
+  animation: blink 2.2s steps(1) 3s infinite both;
+}
+
+.hero__press::before,
+.hero__press::after {
+  content: '—';
+  margin-inline: 0.8em;
+  color: #6c6964;
+}
+
+@keyframes blink {
+  0%,
+  55% {
+    opacity: 1;
+  }
+  56%,
+  100% {
+    opacity: 0.25;
+  }
+}
+
+/* ------------------------------------------------------------------ the passport, examined */
 .hero__doc {
   grid-column: 7 / -1;
-  margin-top: clamp(-4rem, -3vw, -1rem);
   position: relative;
-  z-index: 1;
+  animation: doc-in 1.4s var(--ease-out) 0.9s both;
 }
 
-/* The data page */
+@keyframes doc-in {
+  from {
+    opacity: 0;
+    translate: 2rem 1.5rem;
+    filter: blur(6px);
+  }
+}
+
+.examine__label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--fs-1);
+  color: var(--ink-2);
+}
+
+.examine__label span {
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--red);
+}
+
 .idcard-stage {
   container-type: inline-size;
   perspective: 1400px;
-  rotate: -2.5deg;
-  animation: card-in 1.1s var(--ease-out) 0.25s both;
-}
-
-@keyframes card-in {
-  from {
-    opacity: 0;
-    translate: 3rem 3rem;
-    rotate: 6deg;
-  }
+  rotate: -2deg;
 }
 
 .idcard {
   --rx: 0deg;
   --ry: 0deg;
   --mx: 50%;
-  --my: 50%;
+  --my: 40%;
   position: relative;
   margin: 0;
   aspect-ratio: 125 / 88;
-  border-radius: 14px;
+  border-radius: 1.2cqi;
   overflow: hidden;
-  background: color-mix(in oklab, var(--paper) 55%, white);
+  color: var(--paper-ink);
+  background-color: var(--paper);
+  background-image: var(--tex-paper);
+  background-size: 420px 420px;
   box-shadow:
-    0 1px 0 color-mix(in oklab, var(--ink) 10%, transparent),
-    0 30px 60px -25px color-mix(in oklab, var(--ink) 45%, transparent),
-    0 12px 24px -12px color-mix(in oklab, var(--ink) 25%, transparent);
+    inset 0 0 6cqi rgb(60 40 20 / 0.45),
+    0 30px 60px -25px rgb(0 0 0 / 0.6),
+    0 10px 20px -12px rgb(0 0 0 / 0.4);
   transform: rotateX(var(--rx)) rotateY(var(--ry));
   transition: transform 0.5s var(--ease-out);
   display: grid;
@@ -175,45 +333,18 @@
   gap: 2cqi;
 }
 
-[data-theme='uv'] .idcard {
-  background: #120d29;
-  box-shadow:
-    0 0 0 1px #3ff0c433,
-    0 30px 80px -30px #7b4dff88;
-}
-
-.idcard__waves {
+/* In the other world the same page is lit by red light */
+[data-theme='other'] .idcard::before {
+  content: '';
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.7;
-}
-
-.idcard__holo {
-  position: absolute;
-  inset: 0;
+  background: #b0261b;
+  mix-blend-mode: multiply;
+  opacity: 0.3;
   pointer-events: none;
-  background: linear-gradient(
-    115deg,
-    transparent 25%,
-    #6fe3e0 38%,
-    #b79cff 46%,
-    #f6d98e 54%,
-    #ff9ec7 62%,
-    transparent 75%
-  );
-  background-size: 260% 260%;
-  background-position: var(--mx) var(--my);
-  mix-blend-mode: soft-light;
-  opacity: 0.9;
-  mask-image: radial-gradient(circle at 74% 38%, #000 0 22%, transparent 48%),
-    repeating-radial-gradient(circle at 74% 38%, #000 0 1.5px, transparent 1.5px 4px);
-  mask-composite: add;
-  transition: background-position 0.3s;
 }
 
-.idcard > :not(.idcard__waves, .idcard__holo, .idcard__scan, .stamp-verified, .idcard__uv) {
+.idcard > :not(.idcard__light, .idcard__scan, .idcard__verified, .idcard__secret) {
   position: relative;
 }
 
@@ -221,15 +352,16 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-size: 2.6cqi;
-  font-weight: 700;
-  font-stretch: 125%;
-  color: var(--bordeaux);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 3.4cqi;
+  color: #6e1810;
 }
 
 .idcard__type {
-  font-weight: 500;
-  color: var(--ink-soft);
+  font-style: normal;
+  font-size: 2.6cqi;
+  color: var(--paper-soft);
 }
 
 .idcard__body {
@@ -242,30 +374,33 @@
 .idcard__portrait {
   position: relative;
   aspect-ratio: 35 / 45;
-  border-radius: 1.2cqi;
   overflow: hidden;
-  background: var(--paper-deep);
+  background: #2a2622;
+  box-shadow: 0 0 0 0.3cqi rgb(40 30 20 / 0.35);
   clip-path: inset(0 0 100% 0);
 }
 
 .idcard__portrait.is-revealed {
   clip-path: inset(0);
-  transition: clip-path 0.9s steps(14, end);
+  transition: clip-path 0.9s steps(12, end);
 }
 
+/* An old photograph: no colour, crushed blacks, a little blur */
 .idcard__portrait img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  filter: grayscale(1) sepia(0.35) contrast(1.25) brightness(0.88) blur(0.3px);
 }
 
-/* Guilloché printed over the photo, like on a real data page */
-.idcard__portrait-rosette {
+.idcard__portrait::after {
+  content: '';
   position: absolute;
-  inset: -20%;
-  opacity: 0.35;
-  mix-blend-mode: screen;
-  pointer-events: none;
+  inset: 0;
+  background: var(--tex-grain);
+  background-size: 120px;
+  mix-blend-mode: overlay;
+  opacity: 0.6;
 }
 
 .idcard__fields {
@@ -275,15 +410,16 @@
 }
 
 .idcard__fields dt {
-  font-size: 1.9cqi;
-  color: var(--ink-soft);
-  line-height: 1.2;
+  font-family: var(--font-mono);
+  font-size: 1.8cqi;
+  color: var(--paper-soft);
+  line-height: 1.25;
 }
 
 .idcard__fields dd {
-  font-size: 2.9cqi;
-  font-weight: 650;
-  font-stretch: 110%;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 2.8cqi;
   line-height: 1.2;
 }
 
@@ -293,57 +429,74 @@
 
 .idcard__chip {
   width: 9cqi;
-  color: var(--ink-soft);
-  position: relative;
+  color: var(--paper-soft);
+  transition:
+    color 0.4s,
+    filter 0.4s;
 }
 
 .idcard.is-reading .idcard__chip {
-  color: var(--bordeaux);
-  filter: drop-shadow(0 0 0.6cqi color-mix(in oklab, var(--bordeaux) 60%, transparent));
+  color: #8f1d14;
+  filter: drop-shadow(0 0 0.8cqi rgb(200 40 20 / 0.6));
 }
 
 .mrz {
   display: grid;
-  font-size: 3.25cqi;
-  font-stretch: 75%;
-  font-weight: 500;
-  letter-spacing: 0.02em;
-  line-height: 1.5;
+  font-size: 3.15cqi;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  line-height: 1.55;
   white-space: pre;
   overflow: hidden;
-  color: var(--ink);
+  color: #1f1a16;
+}
+
+/* Before decoding, the strip is static */
+.mrz__line.is-static {
+  color: var(--paper-soft);
+  opacity: 0.55;
+  filter: blur(0.25px);
 }
 
 .mrz__check {
-  background: none;
-  color: var(--bordeaux);
-  font-weight: 800;
+  position: relative;
   display: inline-block;
-  animation: check-pop 0.5s var(--ease-out) both;
-  animation-delay: calc(var(--i) * 8ms);
+  background: none;
+  color: #8f1d14;
 }
 
-@keyframes check-pop {
-  from {
-    scale: 1.8;
-    opacity: 0;
-  }
+.mrz__check .marker {
+  position: absolute;
+  inset: -0.2em -0.38em -0.15em;
+  width: auto;
+  height: auto;
+  stroke-width: 9;
+  --d: calc(var(--n) * 0.12s);
+}
+
+.idcard__light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at var(--mx) var(--my), rgb(255 248 230 / 0.55), transparent 42%);
+  mix-blend-mode: soft-light;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.idcard-stage:hover .idcard__light {
+  opacity: 1;
 }
 
 .idcard__scan {
   position: absolute;
   inset-inline: 0;
   top: 0;
-  height: 18%;
+  height: 16%;
   pointer-events: none;
   opacity: 0;
-  background: linear-gradient(
-    180deg,
-    transparent,
-    color-mix(in oklab, var(--green) 22%, transparent) 70%,
-    var(--green) 96%,
-    transparent
-  );
+  background: linear-gradient(180deg, transparent, rgb(255 250 235 / 0.25) 70%, rgb(255 250 235 / 0.7) 96%, transparent);
+  mix-blend-mode: overlay;
 }
 
 .idcard.is-scanning .idcard__scan {
@@ -360,195 +513,200 @@
   }
   100% {
     opacity: 0;
-    translate: 0 560%;
+    translate: 0 620%;
   }
 }
 
-.idcard__uv {
+/* Written on the page in the other world only */
+.idcard__secret {
   position: absolute;
-  left: 4.5cqi;
-  top: 46cqi;
-  width: 44cqi;
-  rotate: -3deg;
-  font-size: 2.5cqi;
-  font-weight: 700;
-  font-stretch: 115%;
-  line-height: 1.15;
-  pointer-events: none;
-}
-
-.stamp-verified {
-  position: absolute;
-  right: 5cqi;
-  bottom: 20cqi;
-  display: grid;
-  justify-items: center;
-  padding: 1.4cqi 3cqi;
-  border: 0.6cqi double var(--bordeaux);
-  border-radius: 1.5cqi;
-  color: var(--bordeaux);
-  rotate: -14deg;
-  filter: url(#ink);
+  left: 5cqi;
+  top: 47cqi;
+  width: 46cqi;
+  rotate: -4deg;
+  font-size: 3.4cqi;
+  line-height: 1.1;
+  color: #8a0d06;
   opacity: 0;
   pointer-events: none;
-  mix-blend-mode: multiply;
+  transition: opacity 1.2s 0.4s;
 }
 
-[data-theme='uv'] .stamp-verified {
-  mix-blend-mode: screen;
+[data-theme='other'] .idcard__secret {
+  opacity: 0.85;
 }
 
-.stamp-verified span {
-  font-size: 6.5cqi;
-  font-weight: 900;
-  font-stretch: 130%;
-  text-transform: uppercase;
-  line-height: 1;
-}
-
-.stamp-verified small {
-  font-size: 1.8cqi;
-  letter-spacing: 0.2em;
-}
-
-.stamp-verified.is-down {
-  animation: stamp-down 0.42s var(--ease-stamp) both;
-}
-
-@keyframes stamp-down {
-  0% {
-    opacity: 0;
-    scale: 2.6;
-  }
-  75% {
-    opacity: 0.92;
-    scale: 0.94;
-  }
-  100% {
-    opacity: 0.88;
-    scale: 1;
-  }
-}
-
-/* Verification log */
-.checks {
-  margin-top: 2rem;
-  padding-left: clamp(0rem, 3vw, 2.5rem);
-  animation: rise 1s var(--ease-out) 0.9s both;
-}
-
-.checks__list {
+/* "vérifié", circled in red marker once every check has passed */
+.idcard__verified {
+  position: absolute;
+  right: 5cqi;
+  bottom: 19cqi;
+  rotate: -9deg;
   display: grid;
-  gap: 0.15rem;
-  font-size: var(--fs-1);
+  place-items: center;
+  width: 26cqi;
+  height: 13cqi;
+  pointer-events: none;
 }
 
-.checks__list li {
-  display: grid;
-  grid-template-columns: 1fr 1.25rem;
+.idcard__verified span {
+  font-size: 6.4cqi;
+  color: var(--marker);
+  filter: url(#marker);
+}
+
+.idcard__verified .marker {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  stroke-width: 5;
+}
+
+.idcard__verified span {
+  animation: rise 0.5s var(--ease-out) both;
+}
+
+.idcard__verified .marker {
+  --d: 0.25s;
+}
+
+/* The game's text box: what you are looking at, and what was checked */
+.examine {
+  margin-top: 1.25rem;
+  padding: 0.9rem 1.2rem 0.85rem;
+  background: rgb(8 8 8 / 0.82);
+  border: 1px solid #2f2b27;
+  color: #e3ddd2;
+  backdrop-filter: blur(4px);
+}
+
+.examine__now {
+  display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.35rem 0;
-  color: var(--ink-soft);
-  opacity: 0.45;
+  gap: 0.2rem;
+  min-height: 1.6em;
+  font-size: var(--fs-1);
+  margin-bottom: 0.5rem;
+}
+
+.examine__caret {
+  width: 0.55em;
+  height: 1.05em;
+  background: #e3ddd2;
+  animation: blink 1s steps(1) infinite;
+}
+
+.checks {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+  gap: 0.15rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+}
+
+.checks li {
+  display: grid;
+  grid-template-columns: 1.4rem 1fr;
+  align-items: center;
+  gap: 0.6rem;
+  color: #8d877d;
+  opacity: 0.55;
   transition:
     opacity 0.3s,
     color 0.3s;
 }
 
-.checks__list li.is-active,
-.checks__list li.is-ok {
+.checks li.is-active,
+.checks li.is-ok {
   opacity: 1;
 }
 
-.checks__list li.is-ok {
-  color: var(--ink);
+.checks li.is-ok {
+  color: #e3ddd2;
 }
 
-.checks__state {
-  width: 1.1rem;
-  height: 1.1rem;
-  border-radius: 50%;
-  border: 1.5px solid var(--rule);
+.checks li.is-active {
+  animation: flicker 0.9s steps(1) infinite;
+}
+
+.checks__box {
   position: relative;
-  justify-self: end;
+  width: 1rem;
+  height: 1rem;
+  border: 1px solid #5b5650;
 }
 
-.is-active .checks__state {
-  border-color: var(--ink-soft);
-  border-top-color: transparent;
-  animation: spin 0.6s linear infinite;
-}
-
-.is-ok .checks__state {
-  border-color: var(--ok);
-  background: var(--ok);
-}
-
-.is-ok .checks__state::after {
-  content: '';
+.checks__box .marker {
   position: absolute;
-  left: 34%;
-  top: 18%;
-  width: 26%;
-  height: 48%;
-  border: solid var(--paper);
-  border-width: 0 2px 2px 0;
-  rotate: 45deg;
-  animation: check-pop 0.35s var(--ease-out) both;
+  inset: -0.35rem -0.2rem -0.1rem -0.1rem;
+  width: auto;
+  height: auto;
+  stroke-width: 11;
 }
 
-.checks__foot {
-  margin-top: 1rem;
+.checks__box .marker path {
+  animation: marker-draw 0.4s var(--ease-out) both;
+}
+
+.examine__foot {
+  margin-top: 0.6rem;
+  font-family: var(--font-display);
+  font-style: italic;
   font-size: var(--fs-0);
-  color: var(--ink-soft);
-  max-width: 40em;
+  color: #8d877d;
 }
 
-.checks__foot [role='status'] {
-  color: var(--ink);
-  font-weight: 650;
-}
-
-.checks__replay {
-  display: inline;
-  margin-left: 0.5em;
+.examine__replay {
+  margin-left: 0.6em;
   padding: 0;
   border: 0;
   background: none;
-  text-decoration: underline;
-  text-underline-offset: 3px;
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 0.75rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #e3ddd2;
   cursor: pointer;
-  font-weight: 600;
-  color: var(--bordeaux);
+  text-decoration: underline;
+  text-decoration-color: var(--marker);
+  text-underline-offset: 4px;
 }
 
 @media (max-width: 1023px) {
-  .hero__copy {
+  .hero__intro,
+  .hero__doc {
     grid-column: 1 / -1;
   }
 
   .hero__doc {
-    grid-column: 1 / -1;
-    margin-top: 1rem;
-    max-width: 640px;
+    max-width: 620px;
+  }
+
+  .hero__veil {
+    background: linear-gradient(180deg, color-mix(in oklab, var(--bg) 80%, transparent), transparent 70%);
   }
 }
 
 @media (max-width: 560px) {
   .hero__name {
-    font-size: 14vw;
+    font-size: 13.5vw;
   }
 
-  .hero__word + .hero__word {
+  .hero__line + .hero__line {
     padding-left: 0;
+  }
+
+  .hero__credits > span {
+    display: none;
+  }
+
+  .hero__credits {
+    justify-content: center;
   }
 
   .idcard-stage {
     rotate: -1deg;
-  }
-
-  .checks {
-    padding-left: 0;
   }
 }

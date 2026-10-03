@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties, type PointerEvent } from 'react'
-import { Rosette, Waves } from '../components/Guilloche'
+import { MarkerCheck, MarkerLoop } from '../components/Marker'
 import { mrz, profile } from '../data/content'
 import './Hero.css'
 
@@ -18,11 +18,14 @@ const CHECKS = [
 ]
 
 // Time spent on each step before moving to the next one (ms).
-const STEP_DELAYS = [700, 1500, 420, 420, 420, 420, 420]
+const STEP_DELAYS = [900, 1500, 420, 420, 420, 420, 420]
 const DONE = STEP_DELAYS.length
+
+const YEAR = new Date().getFullYear()
 
 const prefersReducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 
+// Before it is read, the strip is radio static: random MRZ characters.
 const MRZ_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789<<<<<<<<'
 const noise = (length: number) =>
   Array.from({ length }, () => MRZ_ALPHABET[Math.floor(Math.random() * MRZ_ALPHABET.length)]).join('')
@@ -45,14 +48,16 @@ function MrzLine({ text, phase, highlight }: { text: string; phase: 'noise' | 'd
     return () => cancelAnimationFrame(raf)
   }, [phase, text])
 
-  if (phase !== 'done') return <span className="mrz__line">{frame}</span>
+  if (phase !== 'done') return <span className={`mrz__line${phase === 'noise' ? ' is-static' : ''}`}>{frame}</span>
 
+  let circled = 0
   return (
     <span className="mrz__line">
       {[...text].map((c, i) =>
         highlight?.has(i) ? (
-          <mark key={i} className="mrz__check" style={{ '--i': i } as CSSProperties}>
+          <mark key={i} className="mrz__check" style={{ '--n': circled++ } as CSSProperties}>
             {c}
+            <MarkerLoop seed={i} />
           </mark>
         ) : (
           c
@@ -72,6 +77,7 @@ export function Hero() {
     return () => clearTimeout(timer)
   }, [step])
 
+  // The card tilts under the pointer and the beam of light follows it.
   const tilt = (event: PointerEvent<HTMLDivElement>) => {
     if (event.pointerType !== 'mouse' || prefersReducedMotion()) return
     const card = cardRef.current
@@ -81,8 +87,8 @@ export function Hero() {
     const y = (event.clientY - box.top) / box.height
     card.style.setProperty('--mx', `${x * 100}%`)
     card.style.setProperty('--my', `${y * 100}%`)
-    card.style.setProperty('--ry', `${(x - 0.5) * 14}deg`)
-    card.style.setProperty('--rx', `${(0.5 - y) * 10}deg`)
+    card.style.setProperty('--ry', `${(x - 0.5) * 12}deg`)
+    card.style.setProperty('--rx', `${(0.5 - y) * 8}deg`)
   }
 
   const untilt = () => {
@@ -94,55 +100,66 @@ export function Hero() {
   const mrzPhase = step === 0 ? 'noise' : step === 1 ? 'decoding' : 'done'
   const checksDone = Math.max(0, step - 1)
   const verified = step >= DONE
+  const current = step === 0 ? 'Vous examinez le passeport.' : verified ? 'Identité vérifiée.' : CHECKS[Math.min(checksDone, CHECKS.length - 1)]
 
   return (
-    <section className="hero" id="top">
-      <Rosette className="hero__rosette" />
+    <section className="hero" id="top" data-monologue="Je ne me souviens pas d’être arrivé ici.">
+      {/* Letterboxed like a film frame: scene, drifting mist and a figure that comes and goes. */}
+      <div className="hero__frame" aria-hidden="true">
+        <div className="hero__scene" />
+        <svg className="hero__figure" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMax slice">
+          <path d="M1001 542l1.8-14-2.6-10 2.5-.6a3.4 3.9 0 1 1 5.6 0l2.5.6-2.6 10 1.8 14z" />
+        </svg>
+        <div className="hero__mist hero__mist--far" />
+        <div className="hero__mist hero__mist--near" />
+        <div className="hero__veil" />
+      </div>
 
       <div className="wrap hero__grid">
-        <h1 className="hero__name" aria-label={`${profile.firstName} ${profile.lastName}`}>
-          {[profile.firstName, profile.lastName].map((word, w) => (
-            <span key={word} className="hero__word" aria-hidden="true">
-              {[...word].map((letter, i) => (
-                <span key={i} className="hero__letter" style={{ '--i': w * 7 + i } as CSSProperties}>
-                  {letter}
-                </span>
-              ))}
-            </span>
-          ))}
-        </h1>
-
-        <div className="hero__copy">
-          <p className="hero__role">
+        <div className="hero__intro">
+          <p className="hero__overline">
             {profile.role} chez {profile.employer}
           </p>
+          <h1 className="hero__name" aria-label={`${profile.firstName} ${profile.lastName}`}>
+            {[profile.firstName, profile.lastName].map((word, i) => (
+              <span key={word} className="hero__line" style={{ '--i': i } as CSSProperties} aria-hidden="true">
+                <span className="hero__worn" data-ghost={word.toLowerCase()}>
+                  {word}
+                </span>
+              </span>
+            ))}
+          </h1>
+          <p className="hero__handle">{profile.handle.toLowerCase()}</p>
           <p className="hero__lead">
-            Je construis ce qui vérifie : le SDK qui lit la puce de votre passeport, la plateforme KYC qui
-            s’en sert, et le proxy open source qui audite chaque appel d’outil de vos agents IA.
+            Je construis ce qui vérifie : le SDK qui lit la puce de votre passeport, la plateforme KYC qui s’en
+            sert, et le proxy open source qui audite chaque appel d’outil de vos agents IA.
           </p>
-          <div className="hero__actions">
-            <a className="btn" href="#contact">
+          <nav className="hero__menu" aria-label="Menu">
+            <a className="menu-btn menu-btn--primary" href="#nfc">
+              Commencer
+            </a>
+            <a className="menu-btn" href="#contact">
               Me contacter
             </a>
-            <a className="btn btn--ghost" href={profile.github} target="_blank" rel="noreferrer">
-              <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
-                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
-              </svg>
+            <a className="menu-btn" href={profile.github} target="_blank" rel="noreferrer">
               GitHub
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
+                <path d="M5 11l6-6M6 5h5v5" />
+              </svg>
             </a>
-          </div>
+          </nav>
         </div>
 
         <div className="hero__doc">
+          <p className="examine__label">
+            <span>Objet</span> passeport de développeur
+          </p>
           <div className="idcard-stage" onPointerMove={tilt} onPointerLeave={untilt}>
             <figure
               ref={cardRef}
               className={`idcard${step === 1 ? ' is-scanning' : ''}${checksDone >= 2 ? ' is-reading' : ''}`}
               aria-label="Page d’identité stylisée, lue comme un vrai passeport"
             >
-              <Waves className="idcard__waves" />
-              <div className="idcard__holo" aria-hidden="true" />
-
               <header className="idcard__head">
                 <span>Passeport de développeur</span>
                 <span className="idcard__type">
@@ -154,7 +171,6 @@ export function Hero() {
                 <div className={`idcard__portrait${checksDone >= 4 ? ' is-revealed' : ''}`}>
                   {/* ponytail: hotlinked so it follows the GitHub avatar; copy into public/ if it must work offline */}
                   <img src={`${profile.github}.png?size=240`} alt={`Avatar GitHub de ${profile.handle}`} width="240" height="240" />
-                  <Rosette className="idcard__portrait-rosette" />
                 </div>
 
                 <dl className="idcard__fields">
@@ -192,7 +208,7 @@ export function Hero() {
                 </svg>
               </div>
 
-              <p className="idcard__uv uv-ink" aria-hidden="true">
+              <p className="idcard__secret hand" aria-hidden="true">
                 Vous inspectez les détails. On devrait travailler ensemble.
               </p>
 
@@ -201,35 +217,51 @@ export function Hero() {
                 <MrzLine text={MRZ_2} phase={mrzPhase} highlight={CHECK_DIGITS} />
               </div>
 
+              <div className="idcard__light" aria-hidden="true" />
               <div className="idcard__scan" aria-hidden="true" />
 
-              <div className={`stamp-verified${verified ? ' is-down' : ''}`} aria-hidden="true">
-                <span>Vérifié</span>
-                <small className="mono">ICAO 9303</small>
-              </div>
+              {verified && (
+                <div className="idcard__verified" aria-hidden="true">
+                  <span className="hand">vérifié</span>
+                  <MarkerLoop seed={3} />
+                </div>
+              )}
             </figure>
           </div>
 
-          <div className="checks">
-            <ol className="checks__list">
+          <div className="examine">
+            <p className="examine__now mono">
+              <span role="status">{current}</span>
+              {!verified && <span className="examine__caret" aria-hidden="true" />}
+            </p>
+            <ol className="checks">
               {CHECKS.map((check, i) => (
                 <li key={check} className={i < checksDone ? 'is-ok' : i === checksDone && step > 0 ? 'is-active' : ''}>
+                  <span className="checks__box" aria-hidden="true">
+                    {i < checksDone && <MarkerCheck />}
+                  </span>
                   {check}
-                  <span className="checks__state" aria-hidden="true" />
                 </li>
               ))}
             </ol>
-            <p className="checks__foot">
-              <span role="status">{verified ? 'Identité vérifiée.' : 'Lecture en cours…'}</span>{' '}
-              Les chiffres de contrôle colorés sont calculés avec l’algorithme ICAO 9303.
+            <p className="examine__foot">
+              Les chiffres de contrôle entourés sont calculés avec l’algorithme ICAO 9303.
               {verified && (
-                <button type="button" className="checks__replay" onClick={() => setStep(0)}>
+                <button type="button" className="examine__replay" onClick={() => setStep(0)}>
                   Relancer la lecture
                 </button>
               )}
             </p>
           </div>
         </div>
+      </div>
+
+      <div className="hero__credits">
+        <span>Paris, {YEAR}</span>
+        <a className="hero__press" href="#nfc">
+          Faites défiler
+        </a>
+        <span>© Antoine Rospars</span>
       </div>
     </section>
   )
