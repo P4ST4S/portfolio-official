@@ -1,4 +1,5 @@
-import { buildTd3 } from '../lib/mrz'
+// With the extension: vite.config.ts imports this file too, and Node resolution needs it.
+import { buildTd3 } from '../lib/mrz.ts'
 
 export const profile = {
   firstName: 'Antoine',
@@ -9,9 +10,37 @@ export const profile = {
   focus: 'Fullstack, mobile natif, outillage agentique',
   location: 'Marne-la-Vallée',
   employer: 'Datakeen',
+  employerUrl: 'https://www.datakeen.co/',
   school: 'EPITECH Paris, Master 2027',
+  site: 'https://www.antoinerospars.dev/',
   github: 'https://github.com/P4ST4S',
   linkedin: 'https://www.linkedin.com/in/antoinerospars/',
+  pitch:
+    'Je construis ce qui vérifie : le SDK qui lit la puce de votre passeport, la plateforme KYC qui s’en sert, et le proxy open source qui audite chaque appel d’outil de vos agents IA.',
+}
+
+// What a recruiter, or the agent reading for them, should retain in thirty seconds.
+// Not on the visible page: it opens the version served without JavaScript and llms.txt (see src/lib/seo.ts).
+export const highlights = [
+  'SDK mobile NFC de vérification de pièces d’identité conçu de zéro, livré en Flutter, Kotlin, Swift et React Native, en production chez un client majeur.',
+  'Auteur et mainteneur de mcp-audit, proxy d’audit open source en Go pour le Model Context Protocol : stable en v1, 12 releases, référencé dans awesome-mcp-servers (95k ★), score A sur Glama, 8 contributeurs externes.',
+  'Contributeur au registry MCP officiel : une issue à l’origine du support des modules Go, des reviews techniques sur OAuth (RFC 8628) et le validateur Cargo.',
+  'A porté le refacto de la plateforme KYC / KYB de Datakeen (NestJS, React), avec une suite E2E Playwright et une CI/CD GitLab de publication npm via OIDC.',
+  'Référent MCP et IA agentique chez Datakeen, responsable de la revue de code, forme les stagiaires.',
+  'Du backend Go concurrent au mobile natif et à la vision par ordinateur dans le navigateur. Master EPITECH en cours (2027), Erasmus à Stuttgart, anglais C1.',
+]
+
+// Told from the user's side, like the section on the page: how the SDK works internally is Datakeen's know-how.
+export const nfcSdk = {
+  summary:
+    'Chez Datakeen, j’ai conçu de zéro le SDK mobile qui lit la puce des passeports et des cartes d’identité pendant un parcours KYC.',
+  facts: [
+    'Le SDK guide l’utilisateur jusqu’à une capture exploitable du document, sans saisie manuelle.',
+    'Identité et photo sont lues directement dans la puce, telles que l’autorité émettrice les a écrites, par un échange NFC chiffré.',
+    'Il vérifie que la puce a bien été émise par un État, qu’elle n’a pas été modifiée et qu’il ne s’agit pas d’un clone.',
+    'Livré en quatre SDK : Flutter, Kotlin, Swift et React Native.',
+    'En production chez un client majeur, pour plusieurs centaines d’utilisateurs.',
+  ],
 }
 
 // The developer's own data page, encoded like a real passport MRZ.
@@ -29,11 +58,13 @@ export const mrz = buildTd3({
 
 export const mcpAudit = {
   repo: 'https://github.com/P4ST4S/mcp-audit',
+  summary:
+    'Un proxy Go qui se place entre un agent IA et ses outils MCP, sans modifier ni l’un ni l’autre, et garde une trace signée de chaque appel.',
   facts: [
-    { value: '10', label: 'releases publiques, de v0.1.0 à v0.9.0' },
-    { value: '87k ★', label: 'awesome-mcp-servers, où le projet a été mergé' },
+    { value: '12', label: 'releases publiques, de v0.1.0 à v1.1.0' },
+    { value: '95k ★', label: 'awesome-mcp-servers, où le projet a été mergé' },
     { value: 'A', label: 'score qualité sur Glama' },
-    { value: '4', label: 'contributeurs externes venus d’eux-mêmes' },
+    { value: '8', label: 'contributeurs externes venus d’eux-mêmes' },
   ],
   features: [
     'Proxy stdio et HTTP, transparent pour le client comme pour le serveur',
@@ -132,7 +163,7 @@ export const projects: Project[] = [
   {
     name: 'AutoScanlate AI',
     pitch: 'Traduit un chapitre de manga de bout en bout sur GPU.',
-    proof: '29 ★ sur GitHub',
+    proof: '35 ★ sur GitHub',
     stack: ['Python', 'Go', 'NestJS', 'React', 'YOLO', 'MangaOCR', 'Qwen 2.5 7B'],
     detail:
       'Détection des bulles avec YOLO, OCR japonais avec MangaOCR, traduction par un LLM local, puis inpainting du texte d’origine. Quatre outils d’habitude séparés, réunis dans une architecture microservices : worker IA en Python, backend Go et NestJS, suivi de progression en temps réel par Server-Sent Events.',
